@@ -1,0 +1,172 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  font-size: 14px;
+}
+
+/* ── Root canvas ─────────────────────────────────────────────────────────────
+   Full viewport width; overflow:hidden so only the card scroll area scrolls. */
+.v2299_6737 {
+  width: 100%;
+  height: 1024px;
+  background: rgba(255,255,255,1);
+  opacity: 1;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
+}
+
+/* ── Full-screen background ─────────────────────────────────────────────── */
+.v2302_7355 {
+  width: 100%;
+  height: 100%;
+  background: url("../images/v2302_7359.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  opacity: 1;
+  position: absolute;
+  top: 1px;
+  left: 0px;
+  overflow: hidden;
+}
+
+/* ── Top-right home/back button ─────────────────────────────────────────── */
+.v2302_7197 {
+  width: 121px;
+  height: 110px;
+  background: url("../images/v2302_7199.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  opacity: 1;
+  position: absolute;
+  top: 34px;
+  left: 1361px;
+  overflow: hidden;
+}
+
+/* ── Peek-A-Zoo logo, top-left ──────────────────────────────────────────── */
+.v2302_7214 {
+  width: 337px;
+  height: 136px;
+  background: url("../images/v2302_7216.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  opacity: 1;
+  position: absolute;
+  top: 39px;
+  left: 70px;
+  overflow: hidden;
+}
+
+/* ── Mode toggle tabs (Guided ↔ Library) ────────────────────────────────── */
+.v2302_7206 {
+  width: 464px;
+  height: 92px;
+  background: url("../images/v2302_7206.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  opacity: 1;
+  position: absolute;
+  top: 40px;
+  left: 854px;
+  overflow: hidden;
+}
+
+/* ── Path / decorative element (right side of scroll area) ──────────────── */
+.v2302_7237 {
+  width: 233px;
+  height: 323px;
+  background: url("../images/v2302_7237.png") no-repeat center center;
+  background-size: cover;
+  opacity: 1;
+  position: absolute;
+  top: 234px;
+  left: 1318px;
+  overflow: hidden;
+}
+
+/* ── Animal cards on the guided learning path ───────────────────────────── */
+.v2302_7220 {
+  width: 324px;
+  height: 309px;
+  background: url("../images/v2302_7222.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  opacity: 1;
+  position: absolute;
+  top: 370px;
+  left: 171px;
+  overflow: hidden;
+}
+.v2302_7226 {
+  width: 321px;
+  height: 309px;
+  background: url("../images/v2302_7228.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  opacity: 1;
+  position: absolute;
+  top: 172px;
+  left: 526px;
+  overflow: hidden;
+}
+.v2302_7232 {
+  width: 344px;
+  height: 309px;
+  background: url("../images/v2302_7234.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  opacity: 1;
+  position: absolute;
+  top: 292px;
+  left: 911px;
+  overflow: hidden;
+}
+
+/* ── Dotted path connecting the cards ───────────────────────────────────── */
+.v2299_6927 { width:34px; height:34px; background:rgba(253,252,231,1); opacity:1; position:absolute; top:345px; left:333px; border-radius:50%; }
+.v2299_6928 { width:37px; height:38px; background:rgba(253,252,231,1); opacity:1; position:absolute; top:283px; left:495px; border-radius:50%; }
+.v2299_6929 { width:30px; height:30px; background:rgba(253,252,231,1); opacity:1; position:absolute; top:370px; left:896px; border-radius:50%; }
+.v2299_6930 { width:34px; height:34px; background:rgba(253,252,231,1); opacity:1; position:absolute; top:417px; left:1290px; border-radius:50%; transform:rotate(-100deg); }
+.v2299_6931 { width:46px; height:46px; background:rgba(253,252,231,1); opacity:1; position:absolute; top:306px; left:360px; border-radius:50%; }
+.v2299_6932 { width:35px; height:36px; background:rgba(253,252,231,1); opacity:1; position:absolute; top:294px; left:406px; border-radius:50%; }
+.v2299_6933 { width:31px; height:31px; background:rgba(253,252,231,1); opacity:1; position:absolute; top:311px; left:856px; border-radius:50%; }
+.v2299_6934 { width:36px; height:36px; background:rgba(253,252,231,1); opacity:1; position:absolute; top:476px; left:1239px; border-radius:50%; transform:rotate(-100deg); }
+.v2299_6935 { width:25px; height:25px; background:rgba(253,252,231,1); opacity:1; position:absolute; top:302px; left:828px; border-radius:50%; }
+.v2299_6936 { width:57px; height:57px; background:rgba(253,252,231,1); opacity:1; position:absolute; top:271px; left:446px; border-radius:50%; }
+.v2299_6937 { width:44px; height:44px; background:rgba(253,252,231,1); opacity:1; position:absolute; top:341px; left:867px; border-radius:50%; }
+.v2299_6938 { width:51px; height:51px; background:rgba(253,252,231,1); opacity:1; position:absolute; top:456px; left:1273px; border-radius:50%; transform:rotate(-100deg); }
+
+/* ── Mascot panel, bottom-right ─────────────────────────────────────────── */
+.v2299_6939 {
+  width: 391px;
+  height: 466px;
+  /* frame image (v2302_7150.png) missing — character still renders */
+  opacity: 1;
+  position: absolute;
+  top: 558px;
+  left: 1250px;
+  overflow: visible;
+}
+.v2299_6940 {
+  width: 391px;
+  height: 466px;
+  background: url("../images/v59_398.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% auto;
+  opacity: 1;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  overflow: visible;
+}

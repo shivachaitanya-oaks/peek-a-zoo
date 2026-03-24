@@ -1,0 +1,1972 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Peek-A-Zoo</title>
+<link href="https://fonts.googleapis.com/css?family=Baloo&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet" />
+
+<!-- Self-contained CSS (copied to FullApp/css/ â€” url('../images/...') resolves to FullApp/images/) -->
+<link href="css/loading.css"  rel="stylesheet" />
+<link href="css/auth.css"     rel="stylesheet" />
+<link href="css/guided.css"   rel="stylesheet" />
+<link href="css/library.css"  rel="stylesheet" />
+
+<style>
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   FULLAPP MASTER STYLES
+   All original CSS class names are preserved. Overrides are namespaced
+   so they only affect elements within their respective canvas div.
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  margin: 0; padding: 0;
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  background: #8fd0ee; /* sky blue — blends with canvas edges, replaces hard black bars */
+  font-family: Nunito, sans-serif;
+}
+
+/* â”€â”€ Canvas shells â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   Each screen has its own canvas div. Only the active one is visible.
+   transform-origin + left/top set by fitCanvases().               */
+.app-canvas {
+  position: absolute;
+  transform-origin: top left;
+  display: none;
+}
+.app-canvas.active { display: block; }
+
+/* Override Figma root sizes to be exact, not 100% */
+#canvas-loading  { width: 1920px; height: 1024px; } /* widened 1366→1920 to match guided/library aspect ratio */
+#canvas-guided   { width: 1920px; height: 1024px; }
+#canvas-library  { width: 1920px; height: 1024px; }
+
+/* canvas-loading: shift all content +277px right to re-centre in wider 1920px canvas (was 1366px, delta = (1920-1366)/2 = 277px) */
+#canvas-loading .v59_393 { left: 472px !important; }   /* 3+ btn  (195+277) */
+#canvas-loading .v59_394 { left: 878px !important; }   /* 4+ btn  (601+277) */
+#canvas-loading .v59_395 { left: 1290px !important; }  /* 5+ btn  (1013+277) */
+#canvas-loading .v59_396 { left: 731px !important; }   /* tagline text (454+277) */
+#canvas-loading .v59_401 { left: 820px !important; }   /* loading text (543+277) */
+#canvas-loading .v59_397 { left: 771px !important; }   /* loading logo (494+277) */
+.bar-track       { left: 597px !important; }           /* bar start  (320+277) */
+
+/* â”€â”€ Loading screen management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── Splash screen: override background to starry night (v54_104) ──────────── */
+#ld-splash .v59_385 {
+  background-image: url("images/v54_104.png") !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* ── Course selection screen: background (v54_104 — pink/purple starry sky) ─── */
+#ld-courses .v59_385 {
+  background-image: url("images/v54_104.png") !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* ── Course selection: "Let's begin the adventure!" tagline ─────────────────── */
+#ld-courses .v59_396 {
+  display: block !important;
+  text-align: center !important;
+  width: 100% !important;
+  left: 0 !important;
+  letter-spacing: 0.5px;
+}
+
+/* ── Course button text labels ──────────────────────────────────────────────── */
+.v59_393, .v59_394, .v59_395 {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.course-num {
+  font-family: 'Baloo 2', Baloo, cursive;
+  font-size: 190px;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.35);
+  line-height: 1;
+  pointer-events: none;
+}
+.course-yrs {
+  font-family: 'Baloo 2', Baloo, cursive;
+  font-size: 60px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 3px 7px rgba(0,0,0,0.32);
+  line-height: 1;
+  margin-top: -22px;
+  pointer-events: none;
+}
+
+.ld-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
+.ld-screen.active { display: block; }
+
+/* Fix Figma CSS export bugs for logo + bunny in loading */
+.logo-panel {
+  width: 1003.5px; height: 486.6px;
+  background: url("images/v59_386.png") center/contain no-repeat;
+  position: absolute;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 1;
+}
+.splash-bunny {
+  width: 391px; height: 466px;
+  background: url("images/v59_398.png") center/contain no-repeat;
+  position: absolute; top: 500px; left: 50%; transform: translateX(-50%);
+}
+#canvas-loading .v59_386 {
+  width: 563px !important; height: 273px !important;
+  background-size: contain !important;
+  left: 50% !important; transform: translateX(-50%) !important;
+}
+#canvas-loading .v59_384 { min-width: unset !important; }
+
+/* Loading bar animation */
+.bar-track {
+  position: absolute; top: 472px; left: 320px;
+  width: 0; height: 120px; overflow: hidden;
+  border-radius: 60px; transition: width 2.4s ease-in-out;
+}
+.bar-track.loaded { width: 828px; }
+.bar-track .v59_403 { position: absolute !important; top: 0 !important; left: 0 !important; }
+
+/* Hide tagline text */
+.v59_396 { display: none !important; }
+
+/* Idle float animation */
+@keyframes btn-float {
+  0%   { transform: translateY(0px)   scale(1);    }
+  50%  { transform: translateY(-14px) scale(1.04); }
+  100% { transform: translateY(0px)   scale(1);    }
+}
+
+/* Each button floats with a slight stagger so they bob independently */
+#btn-course-3 { animation: btn-float 2.2s ease-in-out infinite; animation-delay: 0s;    }
+#btn-course-4 { animation: btn-float 2.2s ease-in-out infinite; animation-delay: 0.35s; }
+#btn-course-5 { animation: btn-float 2.2s ease-in-out infinite; animation-delay: 0.7s;  }
+
+/* Course button hover — !important overrides the running animation transform */
+.course-btn { cursor: pointer; transition: filter .15s ease; }
+.course-btn:hover  { transform: scale(1.13) !important; animation-play-state: paused; }
+.course-btn:active { transform: scale(0.94) !important; animation-play-state: paused; }
+
+/* Colored glow per course button */
+#btn-course-3:hover  { filter: drop-shadow(0 0 16px rgba(255,130,30,.97))  brightness(1.1) !important; }
+#btn-course-4:hover  { filter: drop-shadow(0 0 16px rgba(255,215,20,.97))  brightness(1.1) !important; }
+#btn-course-5:hover  { filter: drop-shadow(0 0 16px rgba(55,140,255,.97))  brightness(1.1) !important; }
+#btn-course-3:active { filter: drop-shadow(0 0 24px rgba(255,130,30,1))    brightness(1.18) !important; }
+#btn-course-4:active { filter: drop-shadow(0 0 24px rgba(255,215,20,1))    brightness(1.18) !important; }
+#btn-course-5:active { filter: drop-shadow(0 0 24px rgba(55,140,255,1))    brightness(1.18) !important; }
+
+/* â”€â”€ Guided Mode: card scroll â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+#guided-scroll-outer {
+  position: absolute; top: 165px; left: 0; width: 1300px; height: 859px;
+  overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none;
+}
+#guided-scroll-outer::-webkit-scrollbar { display: none; }
+#guided-scroll-inner { position: relative; width: 1560px; height: 859px; }
+
+#guided-scroll-inner .v2302_7237 { top:  69px; }
+#guided-scroll-inner .v2302_7226 { top:   7px; }
+#guided-scroll-inner .v2302_7232 { top: 127px; }
+#guided-scroll-inner .v2302_7220 { top: 205px; }
+#guided-scroll-inner .v2299_6936 { top: 106px; }
+#guided-scroll-inner .v2299_6928 { top: 118px; }
+#guided-scroll-inner .v2299_6932 { top: 129px; }
+#guided-scroll-inner .v2299_6935 { top: 137px; }
+#guided-scroll-inner .v2299_6931 { top: 141px; }
+#guided-scroll-inner .v2299_6933 { top: 146px; }
+#guided-scroll-inner .v2299_6937 { top: 176px; }
+#guided-scroll-inner .v2299_6927 { top: 180px; }
+#guided-scroll-inner .v2299_6929 { top: 205px; }
+#guided-scroll-inner .v2299_6930 { top: 252px; }
+#guided-scroll-inner .v2299_6938 { top: 291px; }
+#guided-scroll-inner .v2299_6934 { top: 311px; }
+
+/* â”€â”€ Library Mode: card scroll â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+#library-scroll-outer {
+  position: absolute; top: 415px; left: 0; width: 1300px; height: 609px;
+  overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none;
+}
+#library-scroll-outer::-webkit-scrollbar { display: none; }
+#library-scroll-inner { position: relative; width: 1670px; height: 609px; }
+
+#library-scroll-inner .v2299_6556 { top:   7px; }
+#library-scroll-inner .v2299_6599 { top:   7px; }
+#library-scroll-inner .v2299_6558 { top:   7px; }
+#library-scroll-inner .v2299_6614 { top:  12px; }
+#library-scroll-inner .v2299_6633 { top:   7px; }
+#library-scroll-inner .v2299_6618 { top:  12px; }
+#library-scroll-inner .v2299_6616 { top: 276px; }
+#library-scroll-inner .v2299_6631 { top: 266px; }
+#library-scroll-inner .v2299_6636 { top: 271px; }
+#library-scroll-inner .v2299_6627 { top: 266px; }
+#library-scroll-inner .v2299_6560 { top: 271px; }
+#library-scroll-inner .v2299_6638 { top: 276px; }
+
+/* â”€â”€ Guided / Library interactive elements â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.animal-card { cursor: pointer; transition: transform .15s ease, filter .15s ease; }
+
+/* Default glow (white fallback) */
+.animal-card:hover  { transform: scale(1.06); filter: drop-shadow(0 0 13px rgba(255,255,255,.95)) brightness(1.08); }
+.animal-card:active { transform: scale(0.94); filter: drop-shadow(0 0 20px rgba(255,255,255,1))  brightness(1.16); }
+
+/* GOLD glow — yellow star (v2302_7228) + yellow smiley (v2299_6614) + v2302_7234 */
+.v2302_7226.animal-card:hover,  /* guided: yellow star */
+.v2302_7234.animal-card:hover,  /* yellow smiley override */
+.v2299_6599.animal-card:hover,  /* library: v2302_7228 = yellow star */
+.v2299_6614.animal-card:hover,  /* library: v2299_6614 = yellow smiley */
+.v2299_6618.animal-card:hover,  /* library: v2299_6614 = yellow smiley */
+.v2299_6616.animal-card:hover,  /* library: v2299_6614 = yellow smiley */
+#lib-card-5:hover, #lib-card-8:hover, #lib-card-10:hover, #lib-card-13:hover, #lib-card-15:hover {
+  filter: drop-shadow(0 0 14px rgba(255,210,20,.97)) brightness(1.08);
+}
+.v2302_7226.animal-card:active,
+.v2302_7234.animal-card:active,
+.v2299_6599.animal-card:active,
+.v2299_6614.animal-card:active,
+.v2299_6618.animal-card:active,
+.v2299_6616.animal-card:active,
+#lib-card-5:active, #lib-card-8:active, #lib-card-10:active, #lib-card-13:active, #lib-card-15:active {
+  filter: drop-shadow(0 0 22px rgba(255,210,20,1)) brightness(1.16);
+}
+
+/* PINK glow — pink A (v2302_7222) */
+.v2302_7220.animal-card:hover,  /* guided: pink A */
+.v2299_6556.animal-card:hover,  /* library: v2302_7222 = pink A */
+.v2299_6558.animal-card:hover,  /* library: v2302_7222 = pink A */
+.v2299_6560.animal-card:hover   /* library: v2302_7222 = pink A */
+{ filter: drop-shadow(0 0 14px rgba(255,90,140,.97)) brightness(1.08); }
+.v2302_7220.animal-card:active,
+.v2299_6556.animal-card:active,
+.v2299_6558.animal-card:active,
+.v2299_6560.animal-card:active
+{ filter: drop-shadow(0 0 22px rgba(255,90,140,1)) brightness(1.16); }
+
+/* BLUE glow — blue number-3 (guided only) */
+.v2302_7232.animal-card:hover  { filter: drop-shadow(0 0 14px rgba(55,170,255,.97)) brightness(1.08); }
+.v2302_7232.animal-card:active { filter: drop-shadow(0 0 22px rgba(55,170,255,1))   brightness(1.16); }
+
+/* BLUE glow — puzzle locked (v2299_6636) has blue puzzle pieces */
+.v2299_6636.animal-card:hover,
+.v2299_6638.animal-card:hover
+{ filter: drop-shadow(0 0 14px rgba(55,170,255,.97)) brightness(1.08); }
+.v2299_6636.animal-card:active,
+.v2299_6638.animal-card:active
+{ filter: drop-shadow(0 0 22px rgba(55,170,255,1)) brightness(1.16); }
+
+/* ── Guided / Library: right-align topbar gear + full-width scroll ─────── */
+/* Settings gear: right-align 40px from canvas edge (1920-121-40=1759) */
+#canvas-guided  .v2302_7197 { left: 1759px !important; }
+#canvas-library .v2299_6723 { left: 1759px !important; }
+/* Scroll outer: extend to match gear right edge */
+#guided-scroll-outer  { width: 1880px !important; }
+#library-scroll-outer { width: 1880px !important; }
+/* Scroll inner: wider to hold extra cards */
+#guided-scroll-inner  { width: 3100px !important; }
+#library-scroll-inner { width: 2500px !important; }
+/* Guided: 3 extra game cards continuing the wave path */
+#g-card-4 { position: absolute !important; left: 1380px !important; top: 240px !important; }
+#g-card-5 { position: absolute !important; left: 1760px !important; top:  50px !important; }
+#g-card-6 { position: absolute !important; left: 2140px !important; top: 160px !important; }
+/* Move path-end marker past last new card */
+#canvas-guided .v2302_7237 { left: 2560px !important; }
+/* Library: 4 extra cards continuing column spacing (~270px) */
+#lib-card-13 { position: absolute !important; left: 1695px !important; top:   7px !important; }
+#lib-card-14 { position: absolute !important; left: 1965px !important; top:   7px !important; }
+#lib-card-15 { position: absolute !important; left: 1695px !important; top: 271px !important; }
+#lib-card-16 { position: absolute !important; left: 1965px !important; top: 276px !important; }
+/* Mascot in guided: raise above extended scroll rect */
+#canvas-guided .v2299_6940 { z-index: 5 !important; }
+
+/* ── Library: center category icons on 1920px canvas (+192px from 1366px origin) ── */
+#canvas-library .v2299_6643 { left:  545px !important; }
+#canvas-library .v2299_6647 { left:  710px !important; }
+#canvas-library .v2299_6655 { left:  877px !important; }
+#canvas-library .v2299_6645 { left: 1052px !important; }
+#canvas-library .v2299_6649 { left: 1218px !important; }
+/* Separator line: start from canvas left edge */
+#canvas-library .v2302_7372 { left: 0 !important; }
+
+/* ── Profile popup fixes ────────────────────────────────────────────────── */
+/* Panel covers full canvas height — eliminates dark strip from popup-overlay */
+.panel-qp, .panel-ep { top: 0 !important; height: 100% !important; }
+/* Close button: top-right of popup with 24px padding */
+#btn-close-quick { top: 24px !important; left: 1273px !important; }
+/* Hide top tab bar — left-col nav buttons already handle section switching */
+.tabbar-bg, #tab-profiles, #tab-stickers, #tab-progress, .tab-underline { display: none !important; }
+
+.v2302_7206 { cursor: pointer; z-index: 10; }
+.v2302_7197 { cursor: pointer; z-index: 10; transition: opacity .15s; }
+.v2302_7197:hover { opacity: .75; }
+.v2302_7214 { cursor: pointer; z-index: 10; transition: opacity .15s; }
+.v2302_7214:hover { opacity: .82; }
+
+.v2299_6716 { cursor: pointer; z-index: 10; }
+.v2299_6723 { cursor: pointer; z-index: 10; transition: opacity .15s; }
+.v2299_6723:hover { opacity: .75; }
+.v2299_6730 { cursor: pointer; z-index: 10; transition: opacity .15s; }
+.v2299_6730:hover { opacity: .82; }
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   AUTH SCREEN INLINE STYLES (from authentication/index.html)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.auth-input {
+  position: absolute; background: transparent; border: none; outline: none;
+  font-family: Nunito, sans-serif; font-weight: bold; font-size: 24px;
+  color: rgba(65,65,65,1); z-index: 10;
+}
+.auth-input::placeholder { color: rgba(65,65,65,0.45); }
+.btn-clickable  { cursor: pointer; }
+.link-clickable { cursor: pointer; }
+.link-action {
+  color: rgba(247,174,19,1); text-decoration: underline;
+  font-weight: bold; cursor: pointer;
+}
+.link-action:hover { color: rgba(220,145,0,1); }
+.v54_201, .v54_343, .v54_357 { color: rgba(65,65,65,1); }
+.bubble-text {
+  position: absolute; width: 260px; top: 28px; left: 16px;
+  font-family: Baloo, cursive; font-size: 26px; color: rgba(90,55,10,1);
+  text-align: center; line-height: 1.25; pointer-events: none; z-index: 5;
+}
+#country-picker {
+  display: none; position: absolute; background: #fff8e1;
+  border: 2px solid rgba(247,174,19,1); border-radius: 12px;
+  z-index: 500; min-width: 210px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.18); overflow: hidden;
+}
+#country-picker.open { display: block; }
+.country-option {
+  padding: 9px 16px; cursor: pointer;
+  font-family: Nunito, sans-serif; font-size: 19px; color: rgba(65,65,65,1);
+  border-bottom: 1px solid rgba(247,174,19,.25);
+}
+.country-option:last-child { border-bottom: none; }
+.country-option:hover { background: rgba(247,174,19,.22); }
+#music-indicator { display: block; }
+.flag-btn { cursor: pointer; z-index: 20; }
+.deco-reopen {
+  position: absolute; top: 166px; left: 1109px; width: 64px; height: 64px;
+  background: rgba(247,174,19,.85); border-radius: 50%;
+  font-size: 28px; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); z-index: 100;
+}
+.deco-reopen:hover { background: rgba(220,145,0,1); }
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   POPUP OVERLAYS  (auth + profile)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.popup-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.65);
+  align-items: center; justify-content: center;
+}
+.popup-overlay.open { display: flex; }
+
+/* Auth popup */
+#auth-popup  { z-index: 9001; }
+#auth-wrap   { position: relative; width: 92vw; max-width: 1480px; height: 88vh; max-height: 1024px; border-radius: 20px; overflow: hidden; box-shadow: 0 12px 48px rgba(0,0,0,.6); }
+#auth-canvas { position: absolute; width: 1480px; height: 1024px; transform-origin: top left; background: transparent !important; }
+#auth-canvas .v54_104 { display: none; } /* full-page meadow bg — not needed inside overlay */
+
+/* Profile popup — floats as a centered dialog over the background */
+#profile-popup  { z-index: 9002; }
+#profile-wrap   { position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 12px 48px rgba(0,0,0,.6); }
+#profile-canvas { position: absolute; width: 1318px; height: 754px; transform-origin: top left; }
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PROFILE SCREEN STYLES  (from Profile/index.html, paths prefixed)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.pview { position: absolute; inset: 0; width: 1318px; height: 754px; }
+
+.bg-qp  { display: none; } /* full-page bg hidden — dark popup-overlay shows through */
+.bg-ep  { display: none; }
+.bg-del { display: none; }
+.bg-av  { position: absolute; inset: 0; background: rgba(0,0,0,0.6); }
+
+.modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.60); }
+
+.panel-qp { position: absolute; top: 126px; left: 0; right: 0; height: 754px; background: url("images/v2302_8448.png") center/cover no-repeat; }
+.panel-ep { position: absolute; top: 126px; left: 0; right: 0; height: 754px; background: url("images/v2302_8448.png") center/cover no-repeat; }
+
+.leftcol-qp { position: absolute; top: 171px; left: 161px; width: 402px; height: 715px; background: url("images/v2302_8378.png") center/cover no-repeat; }
+.leftcol-ep { position: absolute; top: 171px; left: 161px; width: 402px; height: 715px; background: url("images/v2302_8378.png")  center/cover no-repeat; }
+
+.tabbar-bg { position: absolute; top: 204px; left: 746px; width: 442px; height: 90px; background: url("images/v54_95.png") center/cover no-repeat; pointer-events: none; }
+.tab-hit {
+  position: absolute; top: 204px; height: 90px;
+  background: none; border: none; cursor: pointer;
+  font-family: Nunito; font-size: 22px; font-weight: bold;
+  color: rgba(65,35,10,.55);
+  display: flex; align-items: center; justify-content: center;
+  transition: color .15s;
+}
+.tab-hit.active { color: rgba(65,35,10,1); }
+#tab-profiles { left: 746px; width: 148px; }
+#tab-stickers { left: 894px; width: 148px; }
+#tab-progress { left: 1042px; width: 148px; }
+.tab-underline {
+  position: absolute; top: 288px; height: 5px;
+  background: rgba(247,174,19,1); border-radius: 3px;
+  transition: left .2s, width .2s; pointer-events: none;
+}
+
+#btn-edit-mode {
+  position: absolute; top: 130px; left: 639px; width: 52px; height: 54px;
+  background: url("images/v2302_8405.png") center/cover no-repeat;
+  cursor: pointer; transition: opacity .15s;
+}
+#btn-edit-mode:hover { opacity: .75; }
+
+#btn-close-quick {
+  position: absolute; top: 216px; left: 1269px; width: 69px; height: 68px;
+  background: url("images/v2302_8403.png") center/cover no-repeat;
+  cursor: pointer; transition: opacity .15s;
+}
+#btn-close-edit {
+  position: absolute; top: 170px; left: 1268px; width: 79px; height: 77px;
+  background: url("images/v2302_8403.png") center/cover no-repeat;
+  cursor: pointer; transition: opacity .15s;
+}
+#btn-close-avatar {
+  position: absolute; top: 244px; left: 1010px; width: 56px; height: 54px;
+  background: url("images/v2302_8403.png") center/cover no-repeat;
+  cursor: pointer; transition: opacity .15s;
+}
+#btn-close-quick:hover, #btn-close-edit:hover, #btn-close-avatar:hover { opacity: .75; }
+
+.profile-row { position: absolute; left: 209px; width: 304px; cursor: pointer; transition: opacity .15s; }
+.profile-row:hover { opacity: .85; }
+.profile-row.nav-inactive { opacity: 0.55; }
+.profile-row.nav-active   { opacity: 1; }
+.pr-1 { top: 208px; height: 167px; background: url("images/v2302_8330.png") center/100% 100% no-repeat; }
+.pr-2 { top: 375px; height: 167px; background: url("images/v2302_8332.png") center/100% 100% no-repeat; }
+.pr-3 { top: 542px; height: 167px; background: url("images/v2302_8336.png") center/100% 100% no-repeat; }
+.pr-4 { top: 709px; height: 167px; background: url("images/v2302_8336.png") center/100% 100% no-repeat; }
+
+.av-card {
+  position: absolute; cursor: pointer; border-radius: 14px;
+  background-size: cover; background-position: center; background-repeat: no-repeat;
+  box-shadow: 0 4px 12px rgba(0,0,0,.18); border: 3px solid rgba(255,255,255,.7);
+  transition: transform .12s;
+}
+.av-card:hover { transform: scale(1.08); }
+.av-card.av-active { border: 4px solid rgba(247,174,19,1); box-shadow: 0 0 0 3px rgba(247,174,19,.4), 0 4px 12px rgba(0,0,0,.18); }
+.av-del-btn {
+  position: absolute; top: 6px; right: 6px;
+  width: 26px; height: 26px;
+  background: rgba(210,50,50,.85); border-radius: 50%;
+  color: #fff; font-size: 13px; font-weight: bold; line-height: 26px;
+  text-align: center; cursor: pointer; z-index: 20;
+  transition: background .12s, transform .12s;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+  user-select: none;
+}
+.av-del-btn:hover { background: rgba(185,20,20,1); transform: scale(1.18); }
+#av1 { top: 330px; left: 632px;  width: 130px; height: 130px; }
+#av2 { top: 330px; left: 762px;  width: 130px; height: 130px; }
+#av3 { top: 330px; left: 892px;  width: 130px; height: 130px; }
+#av4 { top: 330px; left: 1022px; width: 130px; height: 130px; }
+#av5 { top: 476px; left: 632px;  width: 130px; height: 130px; }
+#av6 { top: 476px; left: 762px;  width: 130px; height: 130px; }
+#av7 { top: 476px; left: 892px;  width: 130px; height: 130px; }
+#av8 { top: 476px; left: 1022px; width: 130px; height: 130px; }
+
+#stickers-heading { position: absolute; top: 240px; left: 600px; font-family: Baloo, cursive; font-size: 28px; color: rgba(65,35,10,1); }
+#stickers-grid    { position: absolute; top: 290px; left: 600px; display: flex; flex-wrap: wrap; gap: 16px; width: 720px; }
+.sticker-item { width: 110px; height: 110px; border-radius: 14px; background: center/cover no-repeat; cursor: pointer; transition: transform .15s; border: 3px solid rgba(247,174,19,.35); }
+.sticker-item:hover { transform: scale(1.12); }
+.sticker-locked { filter: grayscale(1) opacity(.35); cursor: default; }
+.sticker-locked:hover { transform: none; }
+
+/* ── Auth panel fallbacks (v54_315/v54_348/v54_171 not exported) ─── */
+#auth-canvas .v54_315 { background: rgba(255,255,255,0.93) !important; border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,.12); }
+#auth-canvas .v54_348 { background: rgba(255,255,255,0.93) !important; border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,.12); }
+#auth-canvas .v54_171 { background: rgba(255,255,255,0.93) !important; border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,.12); }
+/* v54_316 clips its children at 74px but the button container (v54_339) sits at top:106px — expose it */
+#auth-canvas .v54_316 { overflow: visible !important; }
+#auth-canvas .v54_105 { background-image: url("images/v2302_8448.png") !important; }
+
+#progress-panel { position: absolute; top: 245px; left: 460px; width: 620px; }
+.pg-name  { font-family: Baloo, cursive; font-size: 26px; color: rgba(65,35,10,1); margin-bottom: 4px; }
+.pg-score { font-family: Baloo, cursive; font-size: 52px; color: rgba(247,174,19,1); margin-bottom: 22px; }
+.pg-stat  { display: flex; align-items: center; margin-bottom: 18px; }
+.pg-label { font-family: Nunito; font-size: 19px; font-weight: bold; color: rgba(65,35,10,.8); width: 210px; }
+.pg-track { flex: 1; height: 20px; background: rgba(247,174,19,.18); border-radius: 10px; overflow: hidden; }
+.pg-fill  { height: 100%; background: rgba(247,174,19,1); border-radius: 10px; transition: width .5s; }
+.pg-value { font-family: Nunito; font-size: 19px; font-weight: bold; color: rgba(247,174,19,1); margin-left: 12px; width: 90px; text-align: right; white-space: nowrap; }
+
+.ep-item { position: absolute; cursor: pointer; transition: opacity .15s, transform .12s; border-radius: 8px; }
+.ep-item:hover { opacity: .85; transform: scale(1.04); }
+.ep-item.ep-selected { outline: 3px solid rgba(247,174,19,1); }
+#ep1 { top: 220px; left: 207px; width: 137px; height: 147px; background-size: cover; background-position: center; }
+#ep2 { top: 221px; left: 364px; width: 138px; height: 142px; background-size: cover; background-position: center; }
+#ep3 { top: 377px; left: 207px; width: 136px; height: 142px; background-size: cover; background-position: center; }
+#ep4 { top: 376px; left: 363px; width: 138px; height: 142px; background-size: cover; background-position: center; }
+#ep5 { top: 531px; left: 207px; width: 136px; height: 141px; background-size: cover; background-position: center; }
+#ep6 { top: 531px; left: 359px; width: 138px; height: 141px; background-size: cover; background-position: center; }
+#ep-add {
+  position: absolute; top: 686px; left: 237px; width: 138px; height: 89px;
+  background: rgba(247,174,19,.85); border-radius: 8px;
+  cursor: pointer; transition: opacity .15s;
+  font-family: Baloo, cursive; font-size: 28px; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+}
+#ep-add:hover { opacity: .75; }
+
+#ed-av-bg  { position: absolute; top: 292px; left: 620px; width: 206px; height: 229px; border-radius: 18px; background: rgba(247,220,140,.30); border: 3px solid rgba(247,174,19,.55); pointer-events: none; }
+#ed-av-img {
+  position: absolute; top: 300px; left: 628px; width: 190px; height: 212px;
+  background-size: cover; background-position: center; background-repeat: no-repeat;
+  border-radius: 14px; cursor: pointer; transition: opacity .15s;
+}
+#ed-av-img:hover { opacity: .85; }
+#btn-av-edit   { position: absolute; top: 130px; left: 622px; width: 56px;  height: 58px; background: url("images/v2302_8405.png") center/cover no-repeat; cursor: pointer; transition: opacity .15s; }
+#btn-av-change { position: absolute; top: 540px; left: 613px; width: 220px; height: 47px; background: url("images/v54_95.png") center/cover no-repeat; cursor: pointer; transition: opacity .15s; font-family: Nunito; font-size: 16px; font-weight: bold; color: rgba(65,35,10,1); display: flex; align-items: center; justify-content: center; }
+#btn-av-edit:hover, #btn-av-change:hover { opacity: .75; }
+
+#ed-name-hdr { position: absolute; top: 222px; left: 849px; width: 250px; height: 32px; font-family: Nunito; font-size: 22px; font-weight: bold; color: rgba(65,35,10,1); display: flex; align-items: center; }
+
+#ed-name-bg   { position: absolute; top: 349px; left: 873px; width: 462px; height: 56px; background: url("images/v2302_8399.png") center/cover; pointer-events: none; }
+#ed-dob-bg    { position: absolute; top: 463px; left: 873px; width: 462px; height: 58px; background: url("images/v2302_8397.png") center/cover; pointer-events: none; }
+#ed-course-bg { position: absolute; top: 587px; left: 873px; width: 210px; height: 58px; background: url("images/v2302_8395.png") center/cover; pointer-events: none; }
+#ed-lang-bg   { position: absolute; top: 587px; left: 1110px; width: 225px; height: 58px; background: url("images/v2302_8393.png") center/cover; pointer-events: none; }
+
+#lbl-name   { position: absolute; top: 315px; left: 881px; width: 70px;  height: 20px; font-family: Nunito; font-size: 14px; font-weight: bold; color: rgba(65,35,10,.75); pointer-events: none; display: flex; align-items: center; }
+#lbl-dob    { position: absolute; top: 432px; left: 881px; font-family: Nunito; font-size: 14px; font-weight: bold; color: rgba(65,35,10,.6); pointer-events: none; }
+#lbl-course { position: absolute; top: 555px; left: 881px; width: 84px;  height: 20px; font-family: Nunito; font-size: 14px; font-weight: bold; color: rgba(65,35,10,.75); pointer-events: none; display: flex; align-items: center; }
+#lbl-lang   { position: absolute; top: 555px; left: 1125px; width: 119px; height: 24px; font-family: Nunito; font-size: 14px; font-weight: bold; color: rgba(65,35,10,.75); pointer-events: none; display: flex; align-items: center; }
+
+.ed-input { position: absolute; border: none; outline: none; font-family: Nunito; font-size: 20px; font-weight: bold; color: rgba(65,35,10,1); background: rgba(255,255,255,.92); border-radius: 8px; padding: 0 10px; }
+#inp-name { top: 358px; left: 895px; width: 425px; height: 38px; }
+#inp-dob  { top: 472px; left: 895px; width: 425px; height: 38px; }
+.ed-readonly { position: absolute; font-family: Nunito; font-size: 19px; font-weight: bold; color: rgba(65,35,10,.65); pointer-events: none; display: flex; align-items: center; }
+#val-course { top: 587px; left: 890px; height: 58px; }
+#val-lang   { top: 587px; left: 1125px; height: 58px; }
+
+#btn-save    { position: absolute; top: 723px; left: 954px;  width: 181px; height: 54px; background: url("images/v2302_8418.png") center/cover; cursor: pointer; transition: opacity .15s; }
+#btn-discard { position: absolute; top: 722px; left: 1146px; width: 189px; height: 56px; background: url("images/v54_198.png") center/cover; cursor: pointer; transition: opacity .15s; font-family: Nunito; font-size: 18px; font-weight: bold; color: rgba(65,35,10,1); display: flex; align-items: center; justify-content: center; }
+#btn-delete  { position: absolute; top: 722px; left: 731px;  width: 211px; height: 58px; background: url("images/v2302_8420.png") center/cover; cursor: pointer; transition: opacity .15s; }
+#btn-save:hover, #btn-discard:hover, #btn-delete:hover { opacity: .8; }
+
+.del-card   { position: absolute; top: 216px; left: 443px; width: 650px; height: 514px; background: url("images/v2302_8448.png") center/cover; }
+.del-icon   { position: absolute; top: 244px; left: 712px; width: 113px; height: 70px;  background: url("images/v2302_8473.png") center/cover; }
+.del-title  { position: absolute; top: 327px; left: 653px; width: 232px; height: 28px;  background: url("images/v2302_8475.png") center/cover; }
+.del-div1   { position: absolute; top: 385px; left: 513px; width: 510px; height: 3px;   background: url("images/v2302_8477.png") center/cover; }
+.del-div2   { position: absolute; top: 463px; left: 573px; width: 390px; height: 3px;   background: url("images/v2302_8479.png") center/cover; }
+.del-surety { position: absolute; top: 480px; left: 540px; width: 456px; height: 17px;  background: url("images/v2302_8483.png") center/cover; }
+.del-mascot { position: absolute; top: 516px; left: 475px; width: 187px; height: 188px; background: url("images/v2302_8471.png") center/cover; }
+.del-pin-bg { position: absolute; top: 405px; left: 576px; width: 386px; height: 40px;  background: url("images/v2302_8481.png") center/cover; pointer-events: none; }
+#inp-pin {
+  position: absolute; top: 408px; left: 596px; width: 350px; height: 34px;
+  background: transparent; border: none; outline: none;
+  font-family: Nunito; font-size: 20px; font-weight: bold; color: rgba(65,35,10,1);
+  letter-spacing: 6px; text-align: center;
+}
+#btn-del-cancel  { position: absolute; top: 637px; left: 669px; width: 181px; height: 54px; background: url("images/v2302_8453.png") center/cover; cursor: pointer; transition: opacity .15s; }
+#btn-del-confirm { position: absolute; top: 636px; left: 862px; width: 189px; height: 56px; background: url("images/v2302_8455.png") center/cover; cursor: pointer; transition: opacity .15s; }
+#btn-del-cancel:hover, #btn-del-confirm:hover { opacity: .8; }
+.pin-error { outline: 2px solid rgba(220,60,60,1) !important; border-radius: 4px; }
+
+.av-panel  { position: absolute; top: 216px; left: 443px; width: 650px; height: 514px; background: url("images/v2302_8448.png") center/cover; }
+.av-title  { position: absolute; top: 262px; left: 681px; width: 210px; height: 30px; font-family: Baloo, cursive; font-size: 20px; color: rgba(65,35,10,1); pointer-events: none; display: flex; align-items: center; justify-content: center; }
+.av-opt {
+  position: absolute; cursor: pointer; border-radius: 50%;
+  background-size: cover; background-position: center; background-repeat: no-repeat;
+  transition: transform .12s;
+}
+.av-opt:hover { transform: scale(1.10); }
+.av-opt.av-chosen { box-shadow: 0 0 0 4px rgba(247,174,19,1); }
+
+#as1 { top: 310px; left: 487px; width: 130px; height: 130px; background-image: url("images/pf1.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as2 { top: 310px; left: 631px; width: 130px; height: 130px; background-image: url("images/pf2.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as3 { top: 310px; left: 775px; width: 130px; height: 130px; background-image: url("images/pf3.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as4 { top: 310px; left: 919px; width: 130px; height: 130px; background-image: url("images/pf4.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as5 { top: 456px; left: 487px; width: 130px; height: 130px; background-image: url("images/pf5.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as6 { top: 456px; left: 631px; width: 130px; height: 130px; background-image: url("images/pf6.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as7 { top: 456px; left: 775px; width: 130px; height: 130px; background-image: url("images/pf1.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as8 { top: 456px; left: 919px; width: 130px; height: 130px; background-image: url("images/pf2.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   PROFILE POPUP REDESIGN — 1318 × 754 canvas
+   Left column: 300px sidebar | Right content: left:300, width:1018px
+══════════════════════════════════════════════════════════════════════ */
+
+/* ── Left column ───────────────────────────────────────────────────── */
+.leftcol-qp, .leftcol-ep {
+  top: 0 !important; left: 0 !important;
+  width: 300px !important; height: 754px !important;
+  background-color: #4a86c8 !important;
+  background-size: 100% 100% !important;
+}
+
+/* ── Left nav buttons ──────────────────────────────────────────────── */
+.profile-row { left: 18px !important; width: 264px !important; }
+.pr-1 { top: 116px !important; height: 120px !important; }
+.pr-2 { top: 253px !important; height: 120px !important; }
+.pr-3 { top: 390px !important; height: 120px !important; }
+.pr-4 { top: 527px !important; height: 120px !important; }
+
+/* ── Close buttons ─────────────────────────────────────────────────── */
+#btn-close-quick, #btn-close-edit {
+  top: 20px !important; left: 1236px !important;
+  width: 64px !important; height: 64px !important;
+}
+
+/* ── Pencil / edit-mode button ─────────────────────────────────────── */
+#btn-edit-mode {
+  top: 38px !important; left: 335px !important;
+  width: 56px !important; height: 56px !important;
+}
+
+/* ── "Switch Profiles" heading pill ───────────────────────────────── */
+#heading-switch {
+  position: absolute; top: 36px; left: 625px; width: 380px; height: 58px;
+  background: linear-gradient(135deg, #f7ae13, #f08b0a);
+  border-radius: 29px;
+  font-family: Baloo, cursive; font-size: 26px; color: #fff; font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px rgba(247,174,19,.55);
+  pointer-events: none;
+}
+
+/* ── Avatar cards: 180×180, 4-per-row ─────────────────────────────── */
+.av-card { width: 180px !important; height: 180px !important; }
+#av1 { top: 135px !important; left: 416px !important; background-image: url("images/v2302_8313.png") !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; }
+#av2 { top: 135px !important; left: 618px !important; }
+#av3 { top: 135px !important; left: 820px !important; }
+#av4 { top: 135px !important; left: 1022px !important; }
+#av5 { top: 337px !important; left: 416px !important; }
+#av6 { top: 337px !important; left: 618px !important; }
+#av7 { top: 337px !important; left: 820px !important; }
+#av8 { top: 337px !important; left: 1022px !important; }
+
+/* ── Profile name labels below cards ──────────────────────────────── */
+.av-name {
+  position: absolute; width: 180px; text-align: center;
+  font-family: Nunito, sans-serif; font-size: 14px; font-weight: 700;
+  color: rgba(65,35,10,1); pointer-events: none; line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* Row 1 names: cards bottom = 315, names top = 318, ends ≈ 335 < row2 start 337 */
+#av1-name { top: 318px !important; left: 416px !important; }
+#av2-name { top: 318px !important; left: 618px !important; }
+#av3-name { top: 318px !important; left: 820px !important; }
+#av4-name { top: 318px !important; left: 1022px !important; }
+/* Row 2 names: cards bottom = 517, names top = 522 */
+#av5-name { top: 522px !important; left: 416px !important; }
+#av6-name { top: 522px !important; left: 618px !important; }
+#av7-name { top: 522px !important; left: 820px !important; }
+#av8-name { top: 522px !important; left: 1022px !important; }
+
+/* ── Stickers section ──────────────────────────────────────────────── */
+#stickers-heading { top: 65px !important; left: 330px !important; font-size: 28px !important; }
+#stickers-grid    { top: 120px !important; left: 315px !important; width: 960px !important; gap: 20px !important; }
+.sticker-item { width: 130px !important; height: 130px !important; }
+
+/* ── Progress section ──────────────────────────────────────────────── */
+#progress-panel { top: 55px !important; left: 315px !important; width: 960px !important; }
+.pg-name  { font-size: 28px !important; }
+.pg-score { font-size: 52px !important; }
+.pg-label { width: 240px !important; font-size: 20px !important; }
+.pg-track { height: 22px !important; }
+.pg-value { font-size: 20px !important; }
+
+/* ── Edit view: left-col thumbnails ────────────────────────────────── */
+#ep1 { top: 190px !important; left: 22px !important;  width: 110px !important; height: 110px !important; }
+#ep2 { top: 190px !important; left: 158px !important; width: 110px !important; height: 110px !important; }
+#ep3 { top: 316px !important; left: 22px !important;  width: 110px !important; height: 110px !important; }
+#ep4 { top: 316px !important; left: 158px !important; width: 110px !important; height: 110px !important; }
+#ep5 { top: 442px !important; left: 22px !important;  width: 110px !important; height: 110px !important; }
+#ep6 { top: 442px !important; left: 158px !important; width: 110px !important; height: 110px !important; }
+#ep-add {
+  top: 568px !important; left: 75px !important;
+  width: 150px !important; height: 60px !important;
+  font-size: 24px !important;
+}
+
+/* ── Edit view: avatar (circle, right of left col) ─────────────────── */
+#ed-av-bg  { top: 100px !important; left: 320px !important; width: 220px !important; height: 220px !important; border-radius: 50% !important; }
+#ed-av-img { top: 112px !important; left: 332px !important; width: 196px !important; height: 196px !important; border-radius: 50% !important; }
+#btn-av-edit   { top: 94px !important;  left: 320px !important; width: 56px !important; height: 56px !important; }
+#btn-av-change { top: 338px !important; left: 332px !important; width: 196px !important; height: 50px !important; }
+
+/* ── Edit view: name header ─────────────────────────────────────────── */
+#ed-name-hdr { top: 110px !important; left: 580px !important; width: 700px !important; height: 44px !important; font-size: 30px !important; }
+
+/* ── Edit view: form labels ─────────────────────────────────────────── */
+#lbl-name   { top: 168px !important; left: 580px !important; width: 100px !important; height: 24px !important; font-size: 15px !important; }
+#lbl-dob    { top: 254px !important; left: 580px !important; font-size: 15px !important; }
+#lbl-course { top: 338px !important; left: 580px !important; width: 100px !important; height: 24px !important; font-size: 15px !important; }
+#lbl-lang   { top: 338px !important; left: 930px !important; width: 130px !important; height: 24px !important; font-size: 15px !important; }
+
+/* ── Edit view: input backgrounds ──────────────────────────────────── */
+#ed-name-bg   { top: 192px !important; left: 580px !important; width: 700px !important; height: 58px !important; }
+#ed-dob-bg    { top: 278px !important; left: 580px !important; width: 700px !important; height: 58px !important; }
+#ed-course-bg { top: 362px !important; left: 580px !important; width: 330px !important; height: 58px !important; }
+#ed-lang-bg   { top: 362px !important; left: 930px !important; width: 350px !important; height: 58px !important; }
+
+/* ── Edit view: text inputs ─────────────────────────────────────────── */
+#inp-name { top: 198px !important; left: 592px !important; width: 676px !important; height: 46px !important; }
+#inp-dob  { top: 284px !important; left: 592px !important; width: 676px !important; height: 46px !important; }
+.ed-input { font-size: 22px !important; }
+
+/* ── Edit view: readonly values ─────────────────────────────────────── */
+#val-course { top: 362px !important; left: 588px !important; height: 58px !important; font-size: 20px !important; }
+#val-lang   { top: 362px !important; left: 938px !important; height: 58px !important; font-size: 20px !important; }
+
+/* ── Edit view: action buttons ──────────────────────────────────────── */
+#btn-delete  { top: 464px !important; left: 580px !important; width: 220px !important; height: 60px !important; background: url("images/v2302_8418.png") center/cover no-repeat !important; }
+#btn-discard { top: 464px !important; left: 818px !important; width: 220px !important; height: 60px !important; font-size: 18px !important; }
+#btn-save    { top: 464px !important; left: 1056px !important; width: 220px !important; height: 60px !important; background-image: url("images/v2302_8420.png") !important; }
+
+/* ── Delete / avatar modals ─────────────────────────────────────────── */
+.del-card, .av-panel {
+  top: 150px !important; left: 484px !important;
+  width: 650px !important; height: 380px !important;
+}
+.del-icon   { top: 180px !important; left: 753px !important; }
+.del-title  { top: 241px !important; left: 694px !important; }
+.del-div1   { top: 283px !important; left: 554px !important; }
+.del-div2   { top: 341px !important; left: 614px !important; }
+.del-surety { top: 353px !important; left: 581px !important; }
+.del-mascot { top: 380px !important; left: 516px !important; }
+.del-pin-bg { top: 298px !important; left: 617px !important; }
+#inp-pin    { top: 301px !important; left: 637px !important; }
+#btn-del-cancel  { top: 469px !important; left: 710px !important; }
+#btn-del-confirm { top: 468px !important; left: 903px !important; }
+.av-title   { top: 193px !important; left: 722px !important; }
+#as1 { top: 228px !important; left: 528px !important; } #as2 { top: 228px !important; left: 672px !important; }
+#as3 { top: 228px !important; left: 816px !important; } #as4 { top: 228px !important; left: 960px !important; }
+#as5 { top: 382px !important; left: 528px !important; } #as6 { top: 382px !important; left: 672px !important; }
+#as7 { top: 382px !important; left: 816px !important; } #as8 { top: 382px !important; left: 960px !important; }
+#btn-close-avatar { top: 155px !important; left: 1051px !important; }  /* 1010+65 */
+
+/* ── Move mascot right so ears/body are fully visible ──────────────── */
+#canvas-guided .v2299_6939 { left: 1500px !important; }
+
+/* ── Fix blank library/playroom cards ── */
+#lib-card-5  { background-image: url("images/v2302_7234.png") !important; background-size: cover !important; background-position: center !important; }
+#lib-card-8  { background-image: url("images/v2302_7234.png") !important; background-size: cover !important; background-position: center !important; }
+#lib-card-10 { background-image: url("images/v2302_7234.png") !important; background-size: cover !important; background-position: center !important; }
+/* Fill 3 more gaps in extended scroll area */
+#lib-card-13 { background-image: url("images/v2299_6614.png") !important; background-size: cover !important; background-position: center !important; }
+#lib-card-15 { background-image: url("images/v2302_7234.png") !important; background-size: cover !important; background-position: center !important; }
+#lib-card-16 { background-image: url("images/v2299_6614.png") !important; background-size: cover !important; background-position: center !important; }
+
+/* ── Dynamic player badge (guided & library topbar) ─────────────────── */
+.player-badge {
+  position: absolute;
+  display: flex; align-items: flex-start;
+  pointer-events: none; z-index: 8;
+}
+/* Match each canvas' native logo position exactly */
+#player-badge-guided  { top: 34px;  left: 55px; }
+#player-badge-library { top: 22px;  left: 26px; }
+.pb-av {
+  width: 98px; height: 98px; border-radius: 50%;
+  background-repeat: no-repeat;
+  background-size: 140%;
+  background-position: center top;
+  background-color: #f5f0e8;
+  /* Gold ring — matches Emma's yellow border */
+  border: 4px solid #f5c518;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.85), 0 4px 14px rgba(0,0,0,.35);
+  flex-shrink: 0; overflow: hidden;
+  z-index: 2;
+  /* Pull avatar right so it overlaps the left edge of the pill */
+  margin-right: -50px;
+  margin-top: 4px;
+}
+.pb-info {
+  margin-left: 0;
+  /* The whole pill — name + stars — sits inside this blue block */
+  display: flex; flex-direction: column; justify-content: center;
+  background: #3a8fe8; border-radius: 38px;
+  padding: 8px 26px 8px 58px;   /* left pad clears the overlapping avatar */
+  box-shadow: 0 3px 10px rgba(0,0,0,.25);
+  min-height: 72px;
+}
+.pb-pill {
+  /* Just a row wrapper — no background of its own */
+  background: none; padding: 0;
+  display: flex; align-items: center;
+}
+.pb-name {
+  font-family: Baloo, cursive; font-size: 30px;
+  color: #fff; font-weight: bold; white-space: nowrap;
+}
+.pb-stars {
+  display: flex; align-items: center;
+  padding-left: 2px; margin-top: 2px;
+}
+.pb-star-ico { font-size: 24px; }
+.pb-star-cnt {
+  font-family: Nunito, sans-serif; font-size: 20px;
+  font-weight: bold; color: #fff; margin-left: 4px;
+}
+/* Replace static logo images with dynamic badge */
+#guided-logo  { background: none !important; pointer-events: auto !important; }
+#library-logo { background: none !important; pointer-events: auto !important; }
+/* Make player-badge area clickable to open profile popup */
+#player-badge-guided, #player-badge-library {
+  pointer-events: auto; cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     MAIN CANVAS: LOADING SCREENS  (1366 Ã— 1024)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div id="canvas-loading" class="app-canvas active">
+
+  <!-- SCREEN 1: SPLASH -->
+  <div id="ld-splash" class="ld-screen active">
+    <div class="v59_385"></div><!-- meadow background -->
+    <div class="logo-panel"></div><!-- PEEK-A-ZOO logo, centred -->
+    <div class="splash-bunny"></div><!-- bunny mascot -->
+  </div>
+
+  <!-- SCREEN 2: COURSE SELECTION -->
+  <div id="ld-courses" class="ld-screen">
+    <div class="v59_385"></div><!-- meadow background -->
+    <div class="v59_400"><!-- course panel (background image optional) -->
+      <div class="v59_397"></div><!-- logo -->
+      <span class="v59_396">Let's begin the adventure!</span>
+      <div id="btn-course-3" class="v59_393 course-btn">
+        <span class="course-num">3+</span>
+        <span class="course-yrs">years</span>
+      </div><!-- 3+ years -->
+      <div id="btn-course-4" class="v59_394 course-btn">
+        <span class="course-num">4+</span>
+        <span class="course-yrs">years</span>
+      </div><!-- 4+ years -->
+      <div id="btn-course-5" class="v59_395 course-btn">
+        <span class="course-num">5+</span>
+        <span class="course-yrs">years</span>
+      </div><!-- 5+ years -->
+      <div class="v59_398"></div><!-- bunny mascot -->
+    </div>
+  </div>
+
+  <!-- SCREEN 3: LOADING BAR -->
+  <div id="ld-loading" class="ld-screen">
+    <div class="v59_385"></div><!-- meadow background -->
+    <div class="v59_386"></div><!-- logo -->
+    <div class="v59_405"><!-- loading panel -->
+      <span id="loading-text" class="v59_401">Games are loadingâ€¦</span>
+      <div class="v59_402"></div><!-- bunny mascot -->
+      <div id="bar-track" class="bar-track">
+        <div class="v59_403"></div><!-- rainbow progress bar -->
+      </div>
+    </div>
+  </div>
+
+</div><!-- /canvas-loading -->
+
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     MAIN CANVAS: GUIDED MODE  (1920 Ã— 1024)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div id="canvas-guided" class="app-canvas">
+
+  <!-- Full-screen background -->
+  <div class="v2302_7355"></div>
+
+  <!-- Fixed top bar -->
+  <div id="guided-logo"    class="v2302_7214"></div><!-- logo frame -->
+  <!-- Dynamic player badge — structure is FIXED, only av/name update on profile switch -->
+  <div id="player-badge-guided" class="player-badge">
+    <div class="pb-av" id="pb-av-g"></div>
+    <div class="pb-info">
+      <div class="pb-pill"><span class="pb-name" id="pb-name-g"></span></div>
+      <div class="pb-stars"><span class="pb-star-ico">&#11088;</span><span class="pb-star-cnt">34</span></div>
+    </div>
+  </div>
+  <div id="guided-tabs"    class="v2302_7206"></div><!-- Guided/Library toggle -->
+  <div id="guided-home"    class="v2302_7197"></div><!-- settings â†’ opens Auth popup -->
+
+  <!-- Mascot (fixed, does NOT scroll) -->
+  <div class="v2299_6939"><div class="v2299_6940"></div></div>
+
+  <!-- Scrollable card area -->
+  <div id="guided-scroll-outer">
+    <div id="guided-scroll-inner">
+      <div id="g-card-1" class="v2302_7226 animal-card"></div><!-- left:526  -->
+      <div id="g-card-2" class="v2302_7220 animal-card"></div><!-- left:171  -->
+      <div id="g-card-3" class="v2302_7232 animal-card"></div><!-- left:911  -->
+      <div id="g-card-4" class="v2302_7220 animal-card"></div><!-- left:1380 -->
+      <div id="g-card-5" class="v2302_7226 animal-card"></div><!-- left:1760 -->
+      <div id="g-card-6" class="v2302_7232 animal-card"></div><!-- left:2140 -->
+      <div class="v2302_7237"></div><!-- path end element, moved to left:2560 -->
+      <!-- Dotted trail circles -->
+      <div class="v2299_6927"></div>
+      <div class="v2299_6928"></div>
+      <div class="v2299_6929"></div>
+      <div class="v2299_6930"></div>
+      <div class="v2299_6931"></div>
+      <div class="v2299_6932"></div>
+      <div class="v2299_6933"></div>
+      <div class="v2299_6934"></div>
+      <div class="v2299_6935"></div>
+      <div class="v2299_6936"></div>
+      <div class="v2299_6937"></div>
+      <div class="v2299_6938"></div>
+    </div>
+  </div>
+
+</div><!-- /canvas-guided -->
+
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     MAIN CANVAS: LIBRARY MODE  (1920 Ã— 1024)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div id="canvas-library" class="app-canvas">
+
+  <!-- Full-screen background -->
+  <div class="v2302_7367"></div>
+
+  <!-- Fixed top bar -->
+  <div id="library-logo" class="v2299_6730"></div><!-- logo frame -->
+  <!-- Dynamic player badge — structure is FIXED, only av/name update on profile switch -->
+  <div id="player-badge-library" class="player-badge">
+    <div class="pb-av" id="pb-av-l"></div>
+    <div class="pb-info">
+      <div class="pb-pill"><span class="pb-name" id="pb-name-l"></span></div>
+      <div class="pb-stars"><span class="pb-star-ico">&#11088;</span><span class="pb-star-cnt">34</span></div>
+    </div>
+  </div>
+  <div id="library-tabs" class="v2299_6716"></div><!-- Library/Guided toggle -->
+  <div id="library-home" class="v2299_6723"></div><!-- settings â†’ opens Auth popup -->
+
+  <!-- Fixed category label icons -->
+  <div class="v2299_6643"></div>
+  <div class="v2299_6647"></div>
+  <div class="v2299_6645"></div>
+  <div class="v2299_6649"></div>
+  <div class="v2299_6655"></div>
+
+  <!-- Separator line -->
+  <div class="v2302_7372"></div>
+
+  <!-- Scrollable card area -->
+  <div id="library-scroll-outer">
+    <div id="library-scroll-inner">
+      <!-- Top row -->
+      <div id="lib-card-1"  class="v2299_6556 animal-card"></div>
+      <div id="lib-card-2"  class="v2299_6599 animal-card"></div>
+      <div id="lib-card-3"  class="v2299_6558 animal-card"></div>
+      <div id="lib-card-4"  class="v2299_6614 animal-card"></div>
+      <div id="lib-card-5"  class="v2299_6633 animal-card"></div>
+      <div id="lib-card-6"  class="v2299_6618 animal-card"></div>
+      <!-- Bottom row -->
+      <div id="lib-card-7"  class="v2299_6616 animal-card"></div>
+      <div id="lib-card-8"  class="v2299_6631 animal-card"></div>
+      <div id="lib-card-9"  class="v2299_6636 animal-card"></div>
+      <div id="lib-card-10" class="v2299_6627 animal-card"></div>
+      <div id="lib-card-11" class="v2299_6560 animal-card"></div>
+      <div id="lib-card-12" class="v2299_6638 animal-card"></div>
+      <!-- Extra cards: 2 more per row -->
+      <div id="lib-card-13" class="v2299_6556 animal-card"></div>
+      <div id="lib-card-14" class="v2299_6599 animal-card"></div>
+      <div id="lib-card-15" class="v2299_6631 animal-card"></div>
+      <div id="lib-card-16" class="v2299_6636 animal-card"></div>
+    </div>
+  </div>
+
+</div><!-- /canvas-library -->
+
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     AUTH POPUP OVERLAY  (1480 Ã— 1024 inner canvas)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div id="auth-popup" class="popup-overlay">
+  <div id="auth-wrap">
+    <div id="auth-canvas" class="v54_103">
+
+      <!-- Background layers -->
+      <div class="v54_104"></div>
+      <div class="v54_105"></div>
+
+      <!-- Music button -->
+      <div class="v54_156">
+        <div id="btn-music" class="v54_374 btn-clickable" title="Toggle music"></div>
+        <div id="music-indicator" class="v54_169"></div>
+      </div>
+      <div class="v54_155"></div><!-- music panel decorative -->
+
+      <!-- Bunny mascot + speech bubble -->
+      <div class="v54_152"></div>
+      <div class="v54_150">
+        <div class="v54_151">
+          <span id="bubble-dialogue" class="bubble-text">Welcome Back!</span>
+        </div>
+      </div>
+
+      <!-- Country picker (shared) -->
+      <div id="country-picker"></div>
+
+      <!-- LOGIN SCREEN -->
+      <div id="screen-login" class="v54_315">
+        <div class="v54_316">
+          <div class="v54_317">
+            <div class="v54_318">
+              <span id="login-code" class="v54_319">+91</span>
+              <input id="login-phone" class="auth-input" type="tel" placeholder="Phone number"
+                     style="top:0;left:56px;width:430px;" />
+              <div id="flag-login" class="v54_323 flag-btn btn-clickable">
+                <div class="v54_324"><div class="v54_325"></div></div>
+                <div class="v54_326"><div class="v54_327"><div class="v54_328"><div class="v54_329"></div></div>
+                  <div class="v54_330"><div class="v54_331"><div class="v54_332">
+                    <div class="v54_333"><div class="v54_334"><div class="v54_335"></div></div></div>
+                    <div class="v54_336"><div class="v54_337"><div id="flag-icon-login" class="v54_338"></div></div></div>
+                  </div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="v54_339">
+          <div id="btn-login" class="v54_345 btn-clickable">
+            <span class="v54_346">Login</span>
+          </div>
+          <span class="v54_343">New here?&nbsp;<span id="link-to-register" class="link-action">Register</span></span>
+        </div>
+      </div>
+    </div><!-- /screen-login -->
+
+      <!-- REGISTER SCREEN -->
+      <div id="screen-register" class="v54_171" style="display:none;">
+        <div class="v54_172">
+          <div class="v54_173">
+            <input id="reg-username" class="auth-input" type="text" placeholder="User Name"
+                   style="top:19px;left:28px;width:530px;" />
+          </div>
+          <div class="v54_175">
+            <div class="v54_176">
+              <span id="reg-code" class="v54_177">+91</span>
+              <input id="reg-phone" class="auth-input" type="tel" placeholder="Phone number"
+                     style="top:0;left:56px;width:430px;" />
+              <div id="flag-register" class="v54_181 flag-btn btn-clickable">
+                <div class="v54_182"><div class="v54_183"></div></div>
+                <div class="v54_184"><div class="v54_185"><div class="v54_186"><div class="v54_187"></div></div>
+                  <div class="v54_188"><div class="v54_189"><div class="v54_190">
+                    <div class="v54_191"><div class="v54_192"><div class="v54_193"></div></div></div>
+                    <div class="v54_194"><div class="v54_195"><div id="flag-icon-register" class="v54_196"></div></div></div>
+                  </div></div></div>
+                </div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="v54_197">
+          <div id="btn-register" class="v54_95 btn-clickable">
+            <span class="v54_96">Register</span>
+          </div>
+          <span class="v54_201">Existing user?&nbsp;<span id="link-to-login" class="link-action">Login</span></span>
+        </div>
+      </div>
+
+      <!-- HOME SCREEN -->
+      <div id="screen-home" class="v54_106" style="display:none;">
+        <div class="v54_107">
+          <div class="v54_108">
+            <div class="v54_109">
+              <div class="v54_110">
+                <span id="display-username" class="v54_111">Chandu</span>
+              </div>
+            </div>
+          </div>
+          <div id="btn-logout" class="v54_112 btn-clickable">
+            <div class="v54_135">
+              <div class="v54_371"></div>
+              <span class="v54_148">Logout</span>
+            </div>
+          </div>
+        </div>
+        <span class="v54_149">Version: 0.1.44</span>
+      </div>
+
+      <!-- OTP SCREEN -->
+      <div id="screen-otp" class="v54_348" style="display:none;">
+        <div class="v54_349">
+          <div class="v54_350">
+            <div class="v54_351">
+              <input id="otp-input" class="auth-input" type="text"
+                     inputmode="numeric" maxlength="6" placeholder="Enter OTP"
+                     style="top:0;left:0;width:540px;text-align:center;" />
+            </div>
+          </div>
+        </div>
+        <div class="v54_353">
+          <div id="btn-confirm" class="v54_359 btn-clickable">
+            <span class="v54_360">Confirm</span>
+          </div>
+          <span class="v54_357">Expired?&nbsp;<span id="link-resend-otp" class="link-action">Re-send</span></span>
+        </div>
+      </div>
+
+      <!-- Close / reopen decorative panel -->
+      <div id="btn-close-deco"   class="v54_154 btn-clickable" title="Close"></div>
+      <div id="btn-reopen-deco"  class="deco-reopen btn-clickable" title="Show panel" style="display:none;">&#9654;</div>
+
+    </div><!-- /auth-canvas -->
+  </div><!-- /auth-wrap -->
+</div><!-- /auth-popup -->
+
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     PROFILE POPUP OVERLAY  (1366 Ã— 1024 inner canvas)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div id="profile-popup" class="popup-overlay">
+  <div id="profile-wrap">
+    <div id="profile-canvas">
+
+      <!-- â•â•â• VIEW: QUICK PROFILES â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <div id="view-quick" class="pview">
+        <div class="bg-qp"></div>
+        <div class="panel-qp"></div>
+        <div class="leftcol-qp"></div>
+        <div id="heading-switch">Switch Profiles</div>
+        <div id="pr1" class="profile-row pr-1 nav-active"   data-section="profiles"></div>
+        <div id="pr2" class="profile-row pr-2 nav-inactive" data-section="stickers"></div>
+        <div id="pr4" class="profile-row pr-3 nav-inactive" data-section="progress"></div>
+        <div id="btn-close-quick"></div>
+        <div id="tc-profiles">
+          <div id="av1" class="av-card" title="Add new profile"></div>
+          <div id="av2" class="av-card" data-idx="0"></div>
+          <div id="av3" class="av-card" data-idx="1"></div>
+          <div id="av4" class="av-card" data-idx="2"></div>
+          <div id="av5" class="av-card" data-idx="3"></div>
+          <div id="av6" class="av-card" data-idx="4"></div>
+          <div id="av7" class="av-card" data-idx="5"></div>
+          <div id="av8" class="av-card" data-idx="6"></div>
+          <div id="av1-name" class="av-name"></div>
+          <div id="av2-name" class="av-name"></div>
+          <div id="av3-name" class="av-name"></div>
+          <div id="av4-name" class="av-name"></div>
+          <div id="av5-name" class="av-name"></div>
+          <div id="av6-name" class="av-name"></div>
+          <div id="av7-name" class="av-name"></div>
+          <div id="av8-name" class="av-name"></div>
+        </div>
+        <div id="tc-stickers" style="display:none">
+          <div id="stickers-heading">ðŸŒŸ My Stickers</div>
+          <div id="stickers-grid"></div>
+        </div>
+        <div id="tc-progress" style="display:none">
+          <div id="progress-panel"></div>
+        </div>
+      </div><!-- /view-quick -->
+
+      <!-- â•â•â• VIEW: EDIT PROFILES â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <div id="view-edit" class="pview" style="display:none">
+        <div class="bg-ep"></div>
+        <div class="panel-ep"></div>
+        <div class="leftcol-ep"></div>
+        <div id="ep1" class="ep-item" data-idx="0"></div>
+        <div id="ep2" class="ep-item" data-idx="1"></div>
+        <div id="ep3" class="ep-item" data-idx="2"></div>
+        <div id="ep4" class="ep-item" data-idx="3"></div>
+        <div id="ep5" class="ep-item" data-idx="4"></div>
+        <div id="ep6" class="ep-item" data-idx="5"></div>
+        <div id="ep-add" title="Add profile">+</div>
+        <div id="ed-av-bg"></div>
+        <div id="ed-av-img" title="Change avatar"></div>
+        <div id="btn-av-edit"></div>
+        <div id="btn-av-change">Change Avatar</div>
+        <div id="ed-name-hdr"></div>
+        <div id="ed-name-bg"></div>
+        <div id="ed-dob-bg"></div>
+        <div id="ed-course-bg"></div>
+        <div id="ed-lang-bg"></div>
+        <div id="lbl-name">Name</div>
+        <div id="lbl-dob">Date of Birth</div>
+        <div id="lbl-course">Course</div>
+        <div id="lbl-lang">Language</div>
+        <input id="inp-name" class="ed-input" type="text" placeholder="Name" />
+        <input id="inp-dob"  class="ed-input" type="text" placeholder="DD/MM/YYYY" />
+        <span id="val-course" class="ed-readonly"></span>
+        <span id="val-lang"   class="ed-readonly"></span>
+        <div id="btn-save"></div>
+        <div id="btn-discard">Discard</div>
+        <div id="btn-delete"></div>
+        <div id="btn-close-edit"></div>
+      </div><!-- /view-edit -->
+
+      <!-- â•â•â• MODAL: DELETE WARNING â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <div id="view-delete" class="pview" style="display:none">
+        <div class="bg-ep"></div>
+        <div class="panel-ep"></div>
+        <div class="leftcol-ep"></div>
+        <div class="modal-overlay"></div>
+        <div class="del-card"></div>
+        <div class="del-icon"></div>
+        <div class="del-title"></div>
+        <div class="del-div1"></div>
+        <div class="del-mascot"></div>
+        <div class="del-div2"></div>
+        <div class="del-surety"></div>
+        <div class="del-pin-bg"></div>
+        <input id="inp-pin" type="password" placeholder="Enter parent PIN" maxlength="6" />
+        <div id="btn-del-cancel"></div>
+        <div id="btn-del-confirm"></div>
+      </div><!-- /view-delete -->
+
+      <!-- â•â•â• MODAL: AVATAR SELECTION â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <div id="view-avatar" class="pview" style="display:none">
+        <div class="bg-ep"></div>
+        <div class="panel-ep"></div>
+        <div class="leftcol-ep"></div>
+        <div class="modal-overlay"></div>
+        <div class="av-panel"></div>
+        <div class="av-title">Choose Avatar</div>
+        <div id="as1" class="av-opt" data-key="0"></div>
+        <div id="as2" class="av-opt" data-key="1"></div>
+        <div id="as3" class="av-opt" data-key="2"></div>
+        <div id="as4" class="av-opt" data-key="3"></div>
+        <div id="as5" class="av-opt" data-key="4"></div>
+        <div id="as6" class="av-opt" data-key="5"></div>
+        <div id="as7" class="av-opt" data-key="6"></div>
+        <div id="as8" class="av-opt" data-key="7"></div>
+        <div id="btn-close-avatar"></div>
+      </div><!-- /view-avatar -->
+
+    </div><!-- /profile-canvas -->
+  </div><!-- /profile-wrap -->
+</div><!-- /profile-popup -->
+
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     JAVASCRIPT  â€” unified SPA logic
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<script>
+'use strict';
+
+// â”€â”€ Global app state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+var selectedCourse = '';
+
+// â”€â”€ Canvas dimensions for each main screen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+var CANVAS_DIMS = {
+  'canvas-loading': { W: 1920, H: 1024 },
+  'canvas-guided':  { W: 1920, H: 1024 },
+  'canvas-library': { W: 1920, H: 1024 }
+};
+var activeMainCanvas = 'canvas-loading';
+
+// â”€â”€ Viewport scaling â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function fitCanvas(id) {
+  var dim = CANVAS_DIMS[id];
+  if (!dim) return;
+  var el = document.getElementById(id);
+  var s  = Math.min(innerWidth / dim.W, innerHeight / dim.H);
+  el.style.transform = 'scale(' + s + ')';
+  el.style.left = Math.round((innerWidth  - dim.W * s) / 2) + 'px';
+  el.style.top  = Math.round((innerHeight - dim.H * s) / 2) + 'px';
+}
+function fitAuthCanvas() {
+  var W = 1480, H = 1024;
+  var maxW = Math.min(innerWidth  * 0.96, W);
+  var maxH = Math.min(innerHeight * 0.96, H);
+  var s    = Math.min(maxW / W, maxH / H);
+  var wrap = document.getElementById('auth-wrap');
+  var el   = document.getElementById('auth-canvas');
+  // Size the wrap exactly to the scaled canvas — no dead space inside
+  wrap.style.width  = Math.round(W * s) + 'px';
+  wrap.style.height = Math.round(H * s) + 'px';
+  el.style.transform = 'scale(' + s + ')';
+  el.style.left = '0px';
+  el.style.top  = '0px';
+  window._authScale = s;
+}
+function fitProfileCanvas() {
+  var W = 1318, H = 754;
+  /* Popup dialog: fit within 78% of viewport width and 82% of viewport
+     height so it floats as a proper modal over the background. */
+  var maxW = Math.min(innerWidth  * 0.78, 1050);
+  var maxH = Math.min(innerHeight * 0.82,  800);
+  var s    = Math.min(maxW / W, maxH / H);
+  var wrap = document.getElementById('profile-wrap');
+  var el   = document.getElementById('profile-canvas');
+  wrap.style.width  = Math.round(W * s) + 'px';
+  wrap.style.height = Math.round(H * s) + 'px';
+  el.style.transform = 'scale(' + s + ')';
+  el.style.left = '0px';
+  el.style.top  = '0px';
+}
+function fitAll() {
+  fitCanvas(activeMainCanvas);
+  if (document.getElementById('auth-popup').classList.contains('open'))    fitAuthCanvas();
+  if (document.getElementById('profile-popup').classList.contains('open')) fitProfileCanvas();
+}
+window.addEventListener('resize', fitAll);
+
+// â”€â”€ Show / hide main canvases â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function showMainCanvas(id) {
+  ['canvas-loading', 'canvas-guided', 'canvas-library'].forEach(function(c) {
+    document.getElementById(c).classList.toggle('active', c === id);
+  });
+  activeMainCanvas = id;
+  fitCanvas(id);
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  LOADING SCREENS
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function showLoadingScreen(id) {
+  document.querySelectorAll('.ld-screen').forEach(function(s) {
+    s.classList.toggle('active', s.id === id);
+  });
+}
+
+function animateBar(callback) {
+  var bar = document.getElementById('bar-track');
+  bar.style.transition = 'none';
+  bar.style.width = '0';
+  bar.classList.remove('loaded');
+  bar.offsetWidth; // force reflow
+  bar.style.transition = '';
+  setTimeout(function() { bar.classList.add('loaded'); }, 150);
+  setTimeout(callback, 2800);
+}
+
+function startLoading(text) {
+  document.getElementById('loading-text').textContent = text;
+  showLoadingScreen('ld-loading');
+  animateBar(function() {
+    // Transition from loading canvas â†’ guided mode canvas
+    showMainCanvas('canvas-guided');
+  });
+}
+
+// Splash â†’ Course Selection (2 s)
+setTimeout(function() { showLoadingScreen('ld-courses'); }, 2000);
+
+// Course buttons
+['3', '4', '5'].forEach(function(n) {
+  document.getElementById('btn-course-' + n).addEventListener('click', function() {
+    selectedCourse = n + '+ years';
+    startLoading('Loading ' + selectedCourse + ' adventureâ€¦');
+  });
+});
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  GUIDED MODE
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+document.getElementById('guided-tabs').addEventListener('click', function() {
+  showMainCanvas('canvas-library');
+});
+document.getElementById('guided-home').addEventListener('click', function() {
+  openAuthPopup();
+});
+document.getElementById('guided-logo').addEventListener('click', function() {
+  openProfilePopup();
+});
+document.getElementById('player-badge-guided').addEventListener('click', function() {
+  openProfilePopup();
+});
+
+['g-card-1', 'g-card-2', 'g-card-3'].forEach(function(id, i) {
+  document.getElementById(id).addEventListener('click', function() {
+    console.log('Guided card', i + 1, 'clicked â€” course:', selectedCourse);
+    // TODO: navigate to activity screen
+  });
+});
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  LIBRARY MODE
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+document.getElementById('library-tabs').addEventListener('click', function() {
+  showMainCanvas('canvas-guided');
+});
+document.getElementById('library-home').addEventListener('click', function() {
+  openAuthPopup();
+});
+document.getElementById('library-logo').addEventListener('click', function() {
+  openProfilePopup();
+});
+document.getElementById('player-badge-library').addEventListener('click', function() {
+  openProfilePopup();
+});
+
+for (var _li = 1; _li <= 12; _li++) {
+  (function(idx) {
+    var el = document.getElementById('lib-card-' + idx);
+    if (el) el.addEventListener('click', function() {
+      console.log('Library card', idx, 'clicked â€” course:', selectedCourse);
+      // TODO: navigate to animal category screen
+    });
+  })(_li);
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  AUTH POPUP
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function openAuthPopup() {
+  document.getElementById('auth-popup').classList.add('open');
+  showAuthScreen('screen-login');
+  fitAuthCanvas();
+  requestAnimationFrame(function(){ requestAnimationFrame(fitAuthCanvas); });
+}
+function closeAuthPopup() {
+  document.getElementById('auth-popup').classList.remove('open');
+}
+
+// Auth state
+var authUser     = null;
+var pendingPhone = null;
+var fromRegister = false;
+var musicOn      = true;
+var activeFlag   = null;
+
+var AUTH_DIALOGUES = {
+  'screen-login'    : 'Welcome\nBack!',
+  'screen-register' : "Let's\nRegister!",
+  'screen-otp'      : 'Enter\nthe OTP!',
+  'screen-home'     : 'Save your\nProgress!'
+};
+
+function showAuthScreen(id) {
+  ['screen-register', 'screen-home', 'screen-login', 'screen-otp'].forEach(function(s) {
+    document.getElementById(s).style.display = (s === id) ? '' : 'none';
+  });
+  var el = document.getElementById('bubble-dialogue');
+  if (el) el.textContent = AUTH_DIALOGUES[id] || '';
+  closeCountryPicker();
+}
+
+document.getElementById('btn-music').addEventListener('click', function() {
+  musicOn = !musicOn;
+  document.getElementById('music-indicator').style.display = musicOn ? 'block' : 'none';
+  this.style.opacity = musicOn ? '1' : '0.45';
+});
+
+// Country picker
+var COUNTRIES = [
+  { emoji:'\uD83C\uDDEE\uD83C\uDDF3', name:'India',     code:'+91',  iso:'in' },
+  { emoji:'\uD83C\uDDFA\uD83C\uDDF8', name:'USA',       code:'+1',   iso:'us' },
+  { emoji:'\uD83C\uDDEC\uD83C\uDDE7', name:'UK',        code:'+44',  iso:'gb' },
+  { emoji:'\uD83C\uDDE6\uD83C\uDDFA', name:'Australia', code:'+61',  iso:'au' },
+  { emoji:'\uD83C\uDDE6\uD83C\uDDEA', name:'UAE',       code:'+971', iso:'ae' },
+  { emoji:'\uD83C\uDDF8\uD83C\uDDEC', name:'Singapore', code:'+65',  iso:'sg' },
+  { emoji:'\uD83C\uDDE8\uD83C\uDDE6', name:'Canada',    code:'+1',   iso:'ca' },
+  { emoji:'\uD83C\uDDE9\uD83C\uDDEA', name:'Germany',   code:'+49',  iso:'de' }
+];
+(function buildPicker() {
+  var picker = document.getElementById('country-picker');
+  COUNTRIES.forEach(function(c) {
+    var opt = document.createElement('div');
+    opt.className = 'country-option';
+    opt.innerHTML = c.emoji + '&nbsp;' + c.name + '&nbsp;<b>' + c.code + '</b>';
+    opt.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var flagUrl = 'url("https://flagcdn.com/w40/' + c.iso + '.png")';
+      if (activeFlag === 'login') {
+        document.getElementById('login-code').textContent = c.code;
+        document.getElementById('flag-icon-login').style.backgroundImage = flagUrl;
+      } else if (activeFlag === 'register') {
+        document.getElementById('reg-code').textContent = c.code;
+        document.getElementById('flag-icon-register').style.backgroundImage = flagUrl;
+      }
+      closeCountryPicker();
+    });
+    picker.appendChild(opt);
+  });
+})();
+
+function closeCountryPicker() {
+  document.getElementById('country-picker').classList.remove('open');
+  activeFlag = null;
+}
+function openCountryPicker(triggerEl, target) {
+  var picker = document.getElementById('country-picker');
+  var rect   = triggerEl.getBoundingClientRect();
+  var canvas = document.getElementById('auth-canvas').getBoundingClientRect();
+  var s = window._authScale || 1;
+  picker.style.top  = ((rect.bottom - canvas.top)  / s + 4) + 'px';
+  picker.style.left = ((rect.left   - canvas.left) / s - 80) + 'px';
+  var isOpen = picker.classList.contains('open') && activeFlag === target;
+  closeCountryPicker();
+  if (!isOpen) { activeFlag = target; picker.classList.add('open'); }
+}
+
+document.getElementById('flag-login').addEventListener('click', function(e) {
+  e.stopPropagation(); openCountryPicker(this, 'login');
+});
+document.getElementById('flag-register').addEventListener('click', function(e) {
+  e.stopPropagation(); openCountryPicker(this, 'register');
+});
+document.getElementById('auth-canvas').addEventListener('click', closeCountryPicker);
+
+document.getElementById('btn-register').addEventListener('click', function() {
+  var username = document.getElementById('reg-username').value.trim();
+  var phone    = document.getElementById('reg-phone').value.trim();
+  var code     = document.getElementById('reg-code').textContent;
+  if (!username)         { alert('Please enter a username.'); return; }
+  if (phone.length < 10) { alert('Please enter a valid phone number.'); return; }
+  authUser = username; pendingPhone = code + ' ' + phone; fromRegister = true;
+  document.getElementById('otp-input').value = '';
+  showAuthScreen('screen-otp');
+});
+
+document.getElementById('btn-login').addEventListener('click', function() {
+  var phone = document.getElementById('login-phone').value.trim();
+  var code  = document.getElementById('login-code').textContent;
+  if (phone.length < 10) { alert('Please enter a valid phone number.'); return; }
+  pendingPhone = code + ' ' + phone; fromRegister = false;
+  document.getElementById('otp-input').value = '';
+  showAuthScreen('screen-otp');
+});
+
+document.getElementById('btn-confirm').addEventListener('click', function() {
+  var otp = document.getElementById('otp-input').value.trim();
+  if (otp.length < 4) { alert('Please enter the OTP.'); return; }
+  if (!authUser) authUser = 'User';
+  document.getElementById('display-username').textContent = authUser;
+  showAuthScreen('screen-home');
+});
+
+document.getElementById('link-resend-otp').addEventListener('click', function() {
+  document.getElementById('otp-input').value = '';
+  alert('OTP re-sent to ' + pendingPhone);
+});
+document.getElementById('link-to-login').addEventListener('click', function() { showAuthScreen('screen-login'); });
+document.getElementById('link-to-register').addEventListener('click', function() { showAuthScreen('screen-register'); });
+
+document.getElementById('btn-logout').addEventListener('click', function() {
+  authUser = null; pendingPhone = null; fromRegister = false;
+  document.getElementById('login-phone').value  = '';
+  document.getElementById('login-code').textContent = '+91';
+  document.getElementById('reg-phone').value    = '';
+  document.getElementById('reg-username').value = '';
+  document.getElementById('reg-code').textContent  = '+91';
+  showAuthScreen('screen-login');
+});
+
+// Close auth decorative panel / popup
+var DECO_IDS = ['v54_156', 'v54_155', 'v54_152', 'v54_150'];
+document.getElementById('btn-close-deco').addEventListener('click', function() {
+  // In FullApp context: close the entire auth popup
+  closeAuthPopup();
+});
+document.getElementById('btn-reopen-deco').addEventListener('click', function() {
+  DECO_IDS.forEach(function(id) {
+    var el = document.querySelector('.' + id) || document.getElementById(id);
+    if (el) el.style.display = '';
+  });
+  document.getElementById('btn-close-deco').style.display = '';
+  document.getElementById('btn-reopen-deco').style.display = 'none';
+});
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  PROFILE POPUP
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function openProfilePopup() {
+  document.getElementById('profile-popup').classList.add('open');
+  renderQuick();
+  showProfileView('quick');
+  switchSection('profiles');
+  fitProfileCanvas();
+  requestAnimationFrame(function(){ requestAnimationFrame(fitProfileCanvas); });
+}
+function closeProfilePopup() {
+  document.getElementById('profile-popup').classList.remove('open');
+}
+
+// Avatar image map: 3-col Ã— 2-row source images
+// Avatar image map: pf1-pf6 individual PNGs (cycle if idx > 5)
+var AV_IMGS = [
+  'images/pf1.png', // 0
+  'images/pf2.png', // 1
+  'images/pf3.png', // 2
+  'images/pf4.png', // 3
+  'images/pf5.png', // 4
+  'images/pf6.png', // 5
+  'images/pf1.png', // 6 (cycle)
+  'images/pf2.png'  // 7 (cycle)
+];
+
+function applyAvatar(el, idx) {
+  var src = AV_IMGS[(idx != null ? idx : 0) % AV_IMGS.length] || AV_IMGS[0];
+  el.style.backgroundImage    = 'url("' + src + '")';
+  el.style.backgroundSize     = 'cover';
+  el.style.backgroundPosition = 'center';
+  el.style.backgroundRepeat   = 'no-repeat';
+}
+
+var DEFAULT_PROFILES = [
+  { id:1, name:'Alex',   dob:'12/05/2018', avatarIdx:0, course:'Animals', lang:'English', active:true  },
+  { id:2, name:'Sam',    dob:'08/03/2019', avatarIdx:1, course:'Animals', lang:'Spanish', active:false },
+  { id:3, name:'Jordan', dob:'15/07/2017', avatarIdx:2, course:'Animals', lang:'French',  active:false },
+  { id:4, name:'Riley',  dob:'22/11/2020', avatarIdx:3, course:'Animals', lang:'English', active:false }
+];
+
+function loadProfiles() {
+  try {
+    var s = localStorage.getItem('pk_profiles');
+    return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_PROFILES));
+  } catch(e) { return JSON.parse(JSON.stringify(DEFAULT_PROFILES)); }
+}
+function saveProfiles(list) {
+  try { localStorage.setItem('pk_profiles', JSON.stringify(list)); } catch(e){}
+}
+
+var profiles  = loadProfiles();
+var editIdx      = 0;
+var editDraft    = {};
+var addingProfile = false;
+
+function showProfileView(name) {
+  ['quick','edit','delete','avatar'].forEach(function(v) {
+    document.getElementById('view-' + v).style.display = (v === name) ? '' : 'none';
+  });
+}
+
+function renderQuick() {
+  var addCard = document.getElementById('av1');
+  if (addCard) {
+    addCard.style.backgroundImage    = 'url(“images/v2302_8313.png”)';
+    addCard.style.backgroundSize     = 'cover';
+    addCard.style.backgroundPosition = 'center';
+    addCard.style.backgroundRepeat   = 'no-repeat';
+    addCard.style.borderRadius       = '14px';
+    addCard.style.display = '';
+  }
+  var n1 = document.getElementById('av1-name');
+  if (n1) n1.textContent = '';
+  for (var j = 0; j < 7; j++) {
+    var card = document.getElementById('av' + (j + 2));
+    var lbl  = document.getElementById('av' + (j + 2) + '-name');
+    if (!card) continue;
+    var prof = profiles[j];
+    if (prof) {
+      card.style.display = '';
+      applyAvatar(card, prof.avatarIdx);
+      card.style.borderRadius = '14px';
+      card.dataset.idx = j;
+      card.title = prof.name + (prof.active ? ' \u2714' : '');
+      card.classList.toggle('av-active', !!prof.active);
+      if (lbl) { lbl.textContent = prof.name; lbl.style.display = ''; }
+      // Inject delete button (one per card; reuse if already present)
+      if (!card.querySelector('.av-del-btn')) {
+        var delBtn = document.createElement('div');
+        delBtn.className = 'av-del-btn';
+        delBtn.textContent = '\u2715';
+        delBtn.title = 'Delete profile';
+        card.appendChild(delBtn);
+        delBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var idx = parseInt(card.dataset.idx);
+          if (isNaN(idx) || profiles.length <= 1) return;
+          editIdx = idx;
+          openDelete();
+        });
+      }
+    } else {
+      card.style.display = 'none';
+      if (lbl) lbl.style.display = 'none';
+    }
+  }
+}
+
+/* ── Dynamic top-bar player badge ──────────────────────────────────────
+   ONLY updates the avatar image and the name text — layout never changes. */
+function updateTopBars() {
+  var active = profiles.filter(function(p) { return p.active; })[0] || profiles[0];
+  if (!active) return;
+  var src  = 'url("' + AV_IMGS[(active.avatarIdx != null ? active.avatarIdx : 0) % AV_IMGS.length] + '")';
+  var name = active.name;
+  /* Guided canvas */
+  var avG   = document.getElementById('pb-av-g');
+  var nameG = document.getElementById('pb-name-g');
+  if (avG)   avG.style.backgroundImage = src;
+  if (nameG) nameG.textContent         = name;
+  /* Library / Playroom canvas */
+  var avL   = document.getElementById('pb-av-l');
+  var nameL = document.getElementById('pb-name-l');
+  if (avL)   avL.style.backgroundImage = src;
+  if (nameL) nameL.textContent         = name;
+}
+
+function switchProfile(idx) {
+  profiles.forEach(function(p, i) { p.active = (i === idx); });
+  saveProfiles(profiles);
+  updateTopBars();
+  closeProfilePopup();
+}
+
+var SECTION_TAB_MAP = { profiles:0, stickers:1, progress:2 };
+var TAB_LEFTS = [746, 894, 1042];
+
+function switchSection(name) {
+  document.querySelectorAll('.profile-row').forEach(function(row) {
+    row.classList.toggle('nav-active',   row.dataset.section === name);
+    row.classList.toggle('nav-inactive', row.dataset.section !== name);
+  });
+  document.getElementById('tc-profiles').style.display = (name === 'profiles') ? '' : 'none';
+  document.getElementById('tc-stickers').style.display = (name === 'stickers') ? '' : 'none';
+  document.getElementById('tc-progress').style.display = (name === 'progress') ? '' : 'none';
+  if (name === 'stickers') renderStickers();
+  if (name === 'progress') renderProgress();
+}
+
+var STICKER_DATA = [
+  { img:'images/pf1.png', earned:true  },
+  { img:'images/pf2.png', earned:true  },
+  { img:'images/pf3.png', earned:true  },
+  { img:'images/pf4.png', earned:false },
+  { img:'images/pf5.png', earned:true  },
+  { img:'images/pf6.png', earned:false },
+  { img:'images/pf1.png', earned:true  },
+  { img:'images/pf2.png', earned:false }
+];
+function renderStickers() {
+  var grid = document.getElementById('stickers-grid');
+  grid.innerHTML = '';
+  STICKER_DATA.forEach(function(s) {
+    var d = document.createElement('div');
+    d.className = 'sticker-item' + (s.earned ? '' : ' sticker-locked');
+    d.style.backgroundImage = 'url("' + s.img + '")';
+    d.title = s.earned ? 'âœ… Earned' : 'ðŸ”’ Not yet earned';
+    grid.appendChild(d);
+  });
+}
+
+function renderProgress() {
+  var active = profiles.filter(function(p) { return p.active; })[0] || profiles[0];
+  var name   = active ? active.name : 'Profile';
+  document.getElementById('progress-panel').innerHTML =
+    '<p class="pg-name">' + name + '\'s Progress</p>' +
+    '<p class="pg-score">1,240 pts</p>' +
+    statRow('Activities Done', 72, '18 / 25') +
+    statRow('Animals Learned', 60, '12 / 20') +
+    statRow('Sounds Matched',  85, '17 / 20') +
+    statRow('Stickers Earned', 50, ' 5 / 10') +
+    statRow('Domain Progress', 40, '4 / 10');
+}
+function statRow(label, pct, val) {
+  return '<div class="pg-stat"><span class="pg-label">' + label + '</span>' +
+    '<div class="pg-track"><div class="pg-fill" style="width:' + pct + '%"></div></div>' +
+    '<span class="pg-value">' + val + '</span></div>';
+}
+
+function openEdit(idx) {
+  addingProfile = false;
+  document.getElementById('btn-delete').style.visibility = '';
+  editIdx   = (typeof idx === 'number' && profiles[idx]) ? idx : 0;
+  editDraft = JSON.parse(JSON.stringify(profiles[editIdx]));
+  renderEditLeft();
+  renderEditRight();
+  showProfileView('edit');
+}
+function openAddProfile() {
+  addingProfile = true;
+  editIdx  = -1;
+  editDraft = { id: Date.now(), name: '', dob: '', avatarIdx: 0, course: 'Animals', lang: 'English', active: false };
+  renderEditLeft();
+  applyAvatar(document.getElementById('ed-av-img'), 0);
+  document.getElementById('ed-name-hdr').textContent = 'New Profile';
+  document.getElementById('inp-name').value  = '';
+  document.getElementById('inp-dob').value   = '';
+  document.getElementById('val-course').textContent = 'Animals';
+  document.getElementById('val-lang').textContent   = 'English';
+  document.getElementById('btn-delete').style.visibility = 'hidden';
+  showProfileView('edit');
+}
+function renderEditLeft() {
+  for (var i = 0; i < 6; i++) {
+    var el = document.getElementById('ep' + (i + 1));
+    if (!el) continue;
+    var p = profiles[i];
+    if (p) {
+      el.style.display = '';
+      el.classList.toggle('ep-selected', i === editIdx);
+      el.title = p.name;
+      applyAvatar(el, p.avatarIdx != null ? p.avatarIdx : i);
+      el.style.borderRadius = '12px';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+  var epAdd = document.getElementById('ep-add');
+  if (epAdd) epAdd.style.display = profiles.length >= 6 ? 'none' : '';
+}
+function renderEditRight() {
+  var p = editDraft;
+  applyAvatar(document.getElementById('ed-av-img'), p.avatarIdx != null ? p.avatarIdx : 0);
+  document.getElementById('ed-name-hdr').textContent = p.name;
+  document.getElementById('inp-name').value = p.name;
+  document.getElementById('inp-dob').value  = p.dob;
+  document.getElementById('val-course').textContent = p.course;
+  document.getElementById('val-lang').textContent   = p.lang;
+}
+function saveEdit() {
+  var n = document.getElementById('inp-name').value.trim();
+  var d = document.getElementById('inp-dob').value.trim();
+  editDraft.name = n || editDraft.name;
+  editDraft.dob  = d || editDraft.dob;
+  if (addingProfile) {
+    if (!editDraft.name) {
+      document.getElementById('inp-name').focus();
+      return;
+    }
+    profiles.push(editDraft);
+    saveProfiles(profiles);
+    addingProfile = false;
+    document.getElementById('btn-delete').style.visibility = '';
+    renderQuick();
+    showProfileView('quick');
+    switchSection('profiles');
+  } else {
+    profiles[editIdx] = editDraft;
+    saveProfiles(profiles);
+    openEdit(editIdx);
+  }
+}
+
+function openDelete() {
+  document.getElementById('inp-pin').value = '';
+  document.getElementById('inp-pin').classList.remove('pin-error');
+  showProfileView('delete');
+}
+function confirmDelete() {
+  var pin = document.getElementById('inp-pin').value;
+  if (!pin || pin.length < 1) {
+    document.getElementById('inp-pin').classList.add('pin-error');
+    return;
+  }
+  profiles.splice(editIdx, 1);
+  if (profiles.length === 0) profiles = JSON.parse(JSON.stringify(DEFAULT_PROFILES));
+  if (!profiles.some(function(p) { return p.active; })) profiles[0].active = true;
+  saveProfiles(profiles);
+  renderQuick();
+  showProfileView('quick');
+  switchSection('profiles');
+}
+
+function openAvatarSel() {
+  document.querySelectorAll('.av-opt').forEach(function(el) {
+    el.classList.toggle('av-chosen', parseInt(el.dataset.key) === editDraft.avatarIdx);
+  });
+  showProfileView('avatar');
+}
+function selectAvatar(key) {
+  editDraft.avatarIdx = key;
+  applyAvatar(document.getElementById('ed-av-img'), key);
+  showProfileView('edit');
+}
+
+// Profile event wiring
+document.getElementById('btn-close-quick').addEventListener('click', closeProfilePopup);
+document.querySelectorAll('.profile-row').forEach(function(row) {
+  row.addEventListener('click', function() { switchSection(row.dataset.section); });
+});
+document.getElementById('av1').addEventListener('click', function() {
+  openAddProfile();
+});
+document.getElementById('ep-add').addEventListener('click', openAddProfile);
+document.querySelectorAll('.av-card').forEach(function(card) {
+  if (card.id === 'av1') return;
+  card.addEventListener('click', function() {
+    var idx = parseInt(card.dataset.idx);
+    if (!isNaN(idx) && profiles[idx]) switchProfile(idx);
+  });
+});
+document.getElementById('btn-close-edit').addEventListener('click', function() {
+  addingProfile = false;
+  document.getElementById('btn-delete').style.visibility = '';
+  renderQuick(); showProfileView('quick'); switchSection('profiles');
+});
+document.querySelectorAll('.ep-item').forEach(function(el) {
+  el.addEventListener('click', function() {
+    var idx = parseInt(el.dataset.idx);
+    if (!isNaN(idx) && profiles[idx]) openEdit(idx);
+  });
+});
+['ed-av-img', 'btn-av-edit', 'btn-av-change'].forEach(function(id) {
+  document.getElementById(id).addEventListener('click', openAvatarSel);
+});
+document.getElementById('inp-name').addEventListener('input', function() {
+  document.getElementById('ed-name-hdr').textContent = this.value || editDraft.name;
+});
+document.getElementById('btn-save').addEventListener('click', saveEdit);
+document.getElementById('btn-discard').addEventListener('click', function() {
+  addingProfile = false;
+  document.getElementById('btn-delete').style.visibility = '';
+  renderQuick(); showProfileView('quick'); switchSection('profiles');
+});
+document.getElementById('btn-delete').addEventListener('click', openDelete);
+document.getElementById('btn-del-cancel').addEventListener('click', function() { showProfileView('edit'); });
+document.getElementById('btn-del-confirm').addEventListener('click', confirmDelete);
+document.getElementById('inp-pin').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') confirmDelete();
+  this.classList.remove('pin-error');
+});
+document.querySelectorAll('.av-opt').forEach(function(el) {
+  el.addEventListener('click', function() { selectAvatar(parseInt(el.dataset.key)); });
+});
+document.getElementById('btn-close-avatar').addEventListener('click', function() { showProfileView('edit'); });
+
+// â”€â”€ Initial fit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+fitCanvas('canvas-loading');
+updateTopBars();
+
+// ── Drag-to-scroll for Adventure & Playroom sections ──────────────────────
+(function() {
+  var els = [
+    document.getElementById('guided-scroll-outer'),
+    document.getElementById('library-scroll-outer')
+  ];
+  els.forEach(function(el) {
+    if (!el) return;
+    var startX, scrollLeft, dragging = false;
+    el.addEventListener('mousedown', function(e) {
+      dragging   = true;
+      startX     = e.pageX - el.getBoundingClientRect().left;
+      scrollLeft = el.scrollLeft;
+      el.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+    el.addEventListener('mouseleave', function() {
+      dragging = false;
+      el.style.cursor = 'grab';
+    });
+    el.addEventListener('mouseup', function() {
+      dragging = false;
+      el.style.cursor = 'grab';
+    });
+    el.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      e.preventDefault();
+      var x    = e.pageX - el.getBoundingClientRect().left;
+      var walk = (x - startX) * 1.2;
+      el.scrollLeft = scrollLeft - walk;
+    });
+    el.style.cursor = 'grab';
+  });
+})();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
