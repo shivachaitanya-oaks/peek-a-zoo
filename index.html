@@ -430,22 +430,21 @@ html, body {
   pointer-events: none;
   white-space: nowrap;
 }
-/* Adventure: star ~75px left, book+arrow ~82px right of 464px pill */
+/* Adventure: star ~78px left, book+arrow ~82px right of 464px pill */
 #guided-tabs .tab-inner-text {
-  left: 78px; right: 80px;
-  font-size: 30px;
+  left: 78px; right: 82px;
+  font-size: 29px;
 }
-/* Playroom: arrow+star ~90px left, book ~72px right of 416px pill */
+/* Playroom: arrow+star ~88px left, book ~88px right of 416px pill */
 #library-tabs .tab-inner-text {
-  left: 92px; right: 70px;
-  font-size: 28px;
+  left: 88px; right: 88px;
+  font-size: 26px;
 }
 
 /* ── Settings icons: pin to right edge of canvas ────────────────────────── */
 #guided-home, #library-home {
   left: auto !important;
-  right: 20px !important;
-  /* Guided: swap background to v2299_6723 */
+  right: 30px !important;
 }
 #guided-home {
   background-image: url("images/v2299_6723.png") !important;
@@ -454,14 +453,14 @@ html, body {
   background-repeat: no-repeat !important;
 }
 
-/* ── Worksheet icon: pin just left of settings (right: 20 + 121 + 10 = 151) */
+/* ── Worksheet icon: right: 30 + 121(settings) + 24(gap) = 175px ────────── */
 .worksheet-icon {
   position: absolute;
   width: 110px;
   height: 110px;
   top: 34px;
   left: auto !important;
-  right: 151px;
+  right: 175px;
   background: url("images/v2302_7199.png") center/cover no-repeat;
   cursor: pointer;
   z-index: 10;
