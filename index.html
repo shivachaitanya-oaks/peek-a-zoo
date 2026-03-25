@@ -675,7 +675,7 @@ html, body {
 .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.60); }
 
 /* panel_layout.png = 1318×754 — centred on any viewport */
-.panel-qp { position: absolute; top: 126px; left: calc(50% - 659px); width: 1318px; height: 754px; background: url("images/panel_layout.png") center/cover no-repeat; }
+.panel-qp { position: absolute; top: 126px; left: calc(50% - 659px); width: 1337px; height: 754px; background: url("images/panel_layout.png") center/cover no-repeat; }
 .panel-ep { position: absolute; top: 126px; left: calc(50% - 659px); width: 1318px; height: 754px; background: url("images/panel_layout.png") center/cover no-repeat; }
 
 /* leftcol pinned to the left edge of panel_layout */
@@ -884,25 +884,25 @@ html, body {
 
 /* ── Left column ───────────────────────────────────────────────────── */
 .leftcol-qp, .leftcol-ep {
-  top: 171px !important;
-  left: calc(50% - 659px) !important;
-  width: 402px !important;
-  height: 655px !important;
+  top: 74px !important;
+  left: calc(52% - 638px) !important;
+  width: 362px !important;
+  height: 600px !important;
   background-color: transparent !important;
   background-size: cover !important;
 }
 
 /* ── Left nav buttons ──────────────────────────────────────────────── */
-.profile-row { left: 18px !important; width: 264px !important; }
-.pr-1 { top: 116px !important; height: 120px !important; }
-.pr-2 { top: 253px !important; height: 120px !important; }
-.pr-3 { top: 390px !important; height: 120px !important; }
+.profile-row { left: 84px !important; width: 279px !important; }
+.pr-1 { top: 116px !important; height: 154px !important; }
+.pr-2 { top: 297px !important; height: 143px !important; }
+.pr-3 { top: 478px !important; height: 143px !important; }
 .pr-4 { top: 527px !important; height: 120px !important; }
 
 /* ── Close buttons ─────────────────────────────────────────────────── */
 #btn-close-quick, #btn-close-edit {
-  top: 20px !important; left: 1236px !important;
-  width: 64px !important; height: 64px !important;
+  top: 43px !important; left: 1217px !important;
+  width: 65px !important; height: 65px !important;
 }
 
 /* ── Pencil / edit-mode button ─────────────────────────────────────── */
@@ -952,65 +952,70 @@ html, body {
 #av8-name { top: 522px !important; left: 1022px !important; }
 
 /* ── Stickers section ──────────────────────────────────────────────── */
-#stickers-heading { top: 65px !important; left: 330px !important; font-size: 28px !important; }
-#stickers-grid    { top: 120px !important; left: 315px !important; width: 960px !important; gap: 20px !important; }
+#stickers-heading { top: 101px !important; left: 434px !important; font-size: 28px !important; }
+#stickers-grid    { top: 159px !important; left: 407px !important; width: 969px !important; gap: 20px !important; }
 .sticker-item { width: 130px !important; height: 130px !important; }
 
 /* ── Progress section ──────────────────────────────────────────────── */
-#progress-panel { top: 55px !important; left: 315px !important; width: 960px !important; }
+#progress-panel { top: 118px !important; left: 411px !important; width: 871px !important; }
 .pg-name  { font-size: 28px !important; }
 .pg-score { font-size: 52px !important; }
 .pg-label { width: 240px !important; font-size: 20px !important; }
 .pg-track { height: 22px !important; }
 .pg-value { font-size: 20px !important; }
 
-/* ── Edit view: left-col thumbnails ────────────────────────────────── */
-#ep1 { top: 190px !important; left: 22px !important;  width: 110px !important; height: 110px !important; }
-#ep2 { top: 190px !important; left: 158px !important; width: 110px !important; height: 110px !important; }
-#ep3 { top: 316px !important; left: 22px !important;  width: 110px !important; height: 110px !important; }
-#ep4 { top: 316px !important; left: 158px !important; width: 110px !important; height: 110px !important; }
-#ep5 { top: 442px !important; left: 22px !important;  width: 110px !important; height: 110px !important; }
-#ep6 { top: 442px !important; left: 158px !important; width: 110px !important; height: 110px !important; }
+/* ── Edit view: left-col thumbnails — centred in 402px leftcol ──────── */
+/* 2 cols × 110px, 16px gap = 236px total → start x = (402-236)/2 = 83 */
+#ep1 { top: 205px !important; left: 83px !important;  width: 110px !important; height: 110px !important; }
+#ep2 { top: 205px !important; left: 209px !important; width: 110px !important; height: 110px !important; }
+#ep3 { top: 331px !important; left: 83px !important;  width: 110px !important; height: 110px !important; }
+#ep4 { top: 331px !important; left: 209px !important; width: 110px !important; height: 110px !important; }
+#ep5 { top: 457px !important; left: 83px !important;  width: 110px !important; height: 110px !important; }
+#ep6 { top: 457px !important; left: 209px !important; width: 110px !important; height: 110px !important; }
 #ep-add {
-  top: 568px !important; left: 75px !important;
-  width: 150px !important; height: 60px !important;
+  top: 583px !important;
+  left: 126px !important;   /* (402-150)/2 = 126 → centred */
+  width: 150px !important; height: 50px !important;
   font-size: 24px !important;
 }
 
-/* ── Edit view: avatar (circle, right of left col) ─────────────────── */
-#ed-av-bg  { top: 100px !important; left: 320px !important; width: 220px !important; height: 220px !important; border-radius: 50% !important; }
-#ed-av-img { top: 112px !important; left: 332px !important; width: 196px !important; height: 196px !important; border-radius: 50% !important; }
-#btn-av-edit   { top: 94px !important;  left: 320px !important; width: 56px !important; height: 56px !important; }
-#btn-av-change { top: 338px !important; left: 332px !important; width: 196px !important; height: 50px !important; }
+/* ── Edit view: avatar area (between leftcol and form) ──────────────── */
+/* avatar centre-x = 430, centre-y = 240                                */
+#ed-av-bg  { top: 130px !important; left: 320px !important; width: 220px !important; height: 220px !important; border-radius: 50% !important; }
+#ed-av-img { top: 142px !important; left: 332px !important; width: 196px !important; height: 196px !important; border-radius: 50% !important; }
+/* pencil pinned to top-RIGHT corner of the avatar circle */
+#btn-av-edit   { top: 130px !important; left: 496px !important; width: 56px !important; height: 56px !important; }
+/* "Change Avatar" button: 16px below the avatar, same x as avatar */
+#btn-av-change { top: 354px !important; left: 332px !important; width: 196px !important; height: 50px !important; }
 
-/* ── Edit view: name header ─────────────────────────────────────────── */
-#ed-name-hdr { top: 110px !important; left: 580px !important; width: 700px !important; height: 44px !important; font-size: 30px !important; }
+/* ── Edit view: name header — aligns with avatar top (142px) ────────── */
+#ed-name-hdr { top: 142px !important; left: 580px !important; width: 700px !important; height: 44px !important; font-size: 30px !important; }
 
 /* ── Edit view: form labels ─────────────────────────────────────────── */
-#lbl-name   { top: 168px !important; left: 580px !important; width: 100px !important; height: 24px !important; font-size: 15px !important; }
-#lbl-dob    { top: 254px !important; left: 580px !important; font-size: 15px !important; }
-#lbl-course { top: 338px !important; left: 580px !important; width: 100px !important; height: 24px !important; font-size: 15px !important; }
-#lbl-lang   { top: 338px !important; left: 930px !important; width: 130px !important; height: 24px !important; font-size: 15px !important; }
+#lbl-name   { top: 202px !important; left: 580px !important; width: 100px !important; height: 24px !important; font-size: 15px !important; }
+#lbl-dob    { top: 288px !important; left: 580px !important; font-size: 15px !important; }
+#lbl-course { top: 372px !important; left: 580px !important; width: 100px !important; height: 24px !important; font-size: 15px !important; }
+#lbl-lang   { top: 372px !important; left: 930px !important; width: 130px !important; height: 24px !important; font-size: 15px !important; }
 
 /* ── Edit view: input backgrounds ──────────────────────────────────── */
-#ed-name-bg   { top: 192px !important; left: 580px !important; width: 700px !important; height: 58px !important; }
-#ed-dob-bg    { top: 278px !important; left: 580px !important; width: 700px !important; height: 58px !important; }
-#ed-course-bg { top: 362px !important; left: 580px !important; width: 330px !important; height: 58px !important; }
-#ed-lang-bg   { top: 362px !important; left: 930px !important; width: 350px !important; height: 58px !important; }
+#ed-name-bg   { top: 226px !important; left: 580px !important; width: 700px !important; height: 58px !important; }
+#ed-dob-bg    { top: 312px !important; left: 580px !important; width: 700px !important; height: 58px !important; }
+#ed-course-bg { top: 396px !important; left: 580px !important; width: 330px !important; height: 58px !important; }
+#ed-lang-bg   { top: 396px !important; left: 930px !important; width: 350px !important; height: 58px !important; }
 
 /* ── Edit view: text inputs ─────────────────────────────────────────── */
-#inp-name { top: 198px !important; left: 592px !important; width: 676px !important; height: 46px !important; }
-#inp-dob  { top: 284px !important; left: 592px !important; width: 676px !important; height: 46px !important; }
+#inp-name { top: 232px !important; left: 592px !important; width: 676px !important; height: 46px !important; }
+#inp-dob  { top: 318px !important; left: 592px !important; width: 676px !important; height: 46px !important; }
 .ed-input { font-size: 22px !important; }
 
 /* ── Edit view: readonly values ─────────────────────────────────────── */
-#val-course { top: 362px !important; left: 588px !important; height: 58px !important; font-size: 20px !important; }
-#val-lang   { top: 362px !important; left: 938px !important; height: 58px !important; font-size: 20px !important; }
+#val-course { top: 396px !important; left: 588px !important; height: 58px !important; font-size: 20px !important; }
+#val-lang   { top: 396px !important; left: 938px !important; height: 58px !important; font-size: 20px !important; }
 
 /* ── Edit view: action buttons ──────────────────────────────────────── */
-#btn-delete  { top: 464px !important; left: 580px !important; width: 220px !important; height: 60px !important; background: url("images/v2302_8418.png") center/cover no-repeat !important; }
-#btn-discard { top: 464px !important; left: 818px !important; width: 220px !important; height: 60px !important; font-size: 18px !important; }
-#btn-save    { top: 464px !important; left: 1056px !important; width: 220px !important; height: 60px !important; background-image: url("images/v2302_8420.png") !important; }
+#btn-delete  { top: 498px !important; left: 580px !important; width: 220px !important; height: 60px !important; background: url("images/v2302_8418.png") center/cover no-repeat !important; }
+#btn-discard { top: 498px !important; left: 818px !important; width: 220px !important; height: 60px !important; font-size: 18px !important; }
+#btn-save    { top: 498px !important; left: 1056px !important; width: 220px !important; height: 60px !important; background-image: url("images/v2302_8420.png") !important; }
 
 /* ── Delete / avatar modals ─────────────────────────────────────────── */
 .del-card, .av-panel {
@@ -1476,7 +1481,7 @@ html, body {
           <div id="av8-name" class="av-name"></div>
         </div>
         <div id="tc-stickers" style="display:none">
-          <div id="stickers-heading">ðŸŒŸ My Stickers</div>
+          <div id="stickers-heading">My Stickers</div>
           <div id="stickers-grid"></div>
         </div>
         <div id="tc-progress" style="display:none">
