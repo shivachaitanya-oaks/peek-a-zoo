@@ -377,8 +377,18 @@ html, body {
   cursor: pointer;
   transition: transform .15s, filter .15s;
 }
-.lock-card:hover  { transform: scale(1.06); filter: drop-shadow(0 0 14px rgba(255,210,80,.9)); }
-.lock-card:active { transform: scale(0.94); filter: drop-shadow(0 0 20px rgba(255,210,80,1)); }
+.lock-card:hover  { transform: scale(1.06) !important; filter: drop-shadow(0 0 14px rgba(255,210,80,.9)); animation-play-state: paused; }
+.lock-card:active { transform: scale(0.94) !important; filter: drop-shadow(0 0 20px rgba(255,210,80,1)); animation-play-state: paused; }
+
+/* ── Guided path cards: idle float (same as course-selection buttons) ───── */
+#g-card-1 { animation: btn-float 2.2s ease-in-out infinite; animation-delay: 0s;    }
+#g-card-2 { animation: btn-float 2.2s ease-in-out infinite; animation-delay: 0.4s;  }
+#g-card-3 { animation: btn-float 2.2s ease-in-out infinite; animation-delay: 0.8s;  }
+#g-card-4 { animation: btn-float 2.2s ease-in-out infinite; animation-delay: 0.25s; }
+#g-card-5 { animation: btn-float 2.2s ease-in-out infinite; animation-delay: 0.6s;  }
+#g-card-6 { animation: btn-float 2.2s ease-in-out infinite; animation-delay: 1.0s;  }
+/* Pause float on hover/active so the scale transform takes full effect */
+.animal-card:hover, .animal-card:active { animation-play-state: paused; }
 
 /* ── Unlock Games modal (inside canvas-guided) ─────────────────────────── */
 #modal-unlock-games {
