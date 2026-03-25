@@ -469,6 +469,30 @@ html, body {
 /* Separator line: start from canvas left edge */
 #canvas-library .v2302_7372 { left: 0 !important; }
 
+/* ── Category label icons: hover + active (selected) state ──────────────── */
+.cat-icon {
+  cursor: pointer;
+  transition: transform .18s cubic-bezier(.34,1.56,.64,1), filter .18s ease;
+  z-index: 5;
+}
+/* Hover — pop up a little + soft glow */
+.cat-icon:hover {
+  transform: scale(1.10) translateY(-5px);
+  filter: drop-shadow(0 0 14px rgba(255,220,80,.85)) brightness(1.10);
+}
+/* Active/pressed flash */
+.cat-icon:active {
+  transform: scale(1.04) translateY(-2px);
+  filter: drop-shadow(0 0 20px rgba(255,220,80,1)) brightness(1.18);
+}
+/* Persistent selected state — stays popped with stronger glow */
+.cat-icon.cat-active {
+  transform: scale(1.13) translateY(-7px) !important;
+  filter: drop-shadow(0 0 22px rgba(255,220,80,1))
+          drop-shadow(0 0 8px rgba(255,255,255,.6))
+          brightness(1.15) !important;
+}
+
 /* ── Profile popup fixes ────────────────────────────────────────────────── */
 /* Panel covers full canvas height — eliminates dark strip from popup-overlay */
 .panel-qp, .panel-ep { top: 0 !important; height: 100% !important; }
@@ -1228,11 +1252,11 @@ html, body {
   <div id="library-home" class="v2299_6723"></div><!-- settings â†’ opens Auth popup -->
 
   <!-- Fixed category label icons -->
-  <div class="v2299_6643"></div>
-  <div class="v2299_6647"></div>
-  <div class="v2299_6645"></div>
-  <div class="v2299_6649"></div>
-  <div class="v2299_6655"></div>
+  <div id="cat-icon-1" class="v2299_6643 cat-icon cat-active"></div>
+  <div id="cat-icon-2" class="v2299_6647 cat-icon"></div>
+  <div id="cat-icon-3" class="v2299_6645 cat-icon"></div>
+  <div id="cat-icon-4" class="v2299_6649 cat-icon"></div>
+  <div id="cat-icon-5" class="v2299_6655 cat-icon"></div>
 
   <!-- Separator line -->
   <div class="v2302_7372"></div>
@@ -1691,6 +1715,19 @@ document.getElementById('library-logo').addEventListener('click', function() {
 document.getElementById('player-badge-library').addEventListener('click', function() {
   openProfilePopup();
 });
+
+/* ── Category label icons: click → set active state ─────────────────────── */
+(function() {
+  var catIcons = document.querySelectorAll('#canvas-library .cat-icon');
+  catIcons.forEach(function(icon) {
+    icon.addEventListener('click', function() {
+      // Remove active from all, apply to clicked
+      catIcons.forEach(function(el) { el.classList.remove('cat-active'); });
+      icon.classList.add('cat-active');
+      console.log('Category selected:', icon.id);
+    });
+  });
+})();
 
 for (var _li = 1; _li <= 12; _li++) {
   (function(idx) {
