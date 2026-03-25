@@ -407,13 +407,14 @@ html, body {
 }
 .tab-inner-text {
   position: absolute;
-  left: 72px; right: 82px;
+  /* Inset past the star icon (left) and book+arrow (right) */
+  left: 82px; right: 90px;
   top: 0; bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Baloo 2', Baloo, cursive;
-  font-size: 26px;
+  font-size: 30px;
   font-weight: 800;
   color: #fff;
   text-shadow: 0 2px 5px rgba(0,0,0,0.30);
@@ -422,7 +423,12 @@ html, body {
   white-space: nowrap;
 }
 
-/* ── Guided settings icon → v2299_6723 ──────────────────────────────────── */
+/* ── Settings icons: pin to right edge of canvas ────────────────────────── */
+#guided-home, #library-home {
+  left: auto !important;
+  right: 20px !important;
+  /* Guided: swap background to v2299_6723 */
+}
 #guided-home {
   background-image: url("images/v2299_6723.png") !important;
   background-size: cover !important;
@@ -430,13 +436,14 @@ html, body {
   background-repeat: no-repeat !important;
 }
 
-/* ── Worksheet icon (shared for both screens) ───────────────────────────── */
+/* ── Worksheet icon: pin just left of settings (right: 20 + 121 + 10 = 151) */
 .worksheet-icon {
   position: absolute;
   width: 110px;
   height: 110px;
   top: 34px;
-  left: 1230px;
+  left: auto !important;
+  right: 151px;
   background: url("images/v2302_7199.png") center/cover no-repeat;
   cursor: pointer;
   z-index: 10;
