@@ -399,28 +399,46 @@ html, body {
 }
 
 
-/* ── Tab pill: "Adventure" / "Playroom" text overlay ────────────────────── */
-.v2302_7206, .v2299_6716 {
+/* ── Tab pill: center on screen + text overlay ───────────────────────────── */
+/* Adventure tab (464px wide) — center it */
+.v2302_7206 {
   cursor: pointer; z-index: 10;
   position: absolute !important;
   overflow: hidden !important;
+  left: calc(50% - 232px) !important;
 }
+/* Playroom tab (416px wide) — center it */
+.v2299_6716 {
+  cursor: pointer; z-index: 10;
+  position: absolute !important;
+  overflow: hidden !important;
+  left: calc(50% - 208px) !important;
+}
+
+/* Shared text base style */
 .tab-inner-text {
   position: absolute;
-  /* Inset past the star icon (left) and book+arrow (right) */
-  left: 82px; right: 90px;
   top: 0; bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Baloo 2', Baloo, cursive;
-  font-size: 30px;
   font-weight: 800;
   color: #fff;
   text-shadow: 0 2px 5px rgba(0,0,0,0.30);
   letter-spacing: 0.5px;
   pointer-events: none;
   white-space: nowrap;
+}
+/* Adventure: star ~75px left, book+arrow ~82px right of 464px pill */
+#guided-tabs .tab-inner-text {
+  left: 78px; right: 80px;
+  font-size: 30px;
+}
+/* Playroom: arrow+star ~90px left, book ~72px right of 416px pill */
+#library-tabs .tab-inner-text {
+  left: 92px; right: 70px;
+  font-size: 28px;
 }
 
 /* ── Settings icons: pin to right edge of canvas ────────────────────────── */
