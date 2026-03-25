@@ -868,14 +868,14 @@ html, body {
 .av-opt:hover { transform: scale(1.10); }
 .av-opt.av-chosen { box-shadow: 0 0 0 4px rgba(247,174,19,1); }
 
-#as1 { top: 310px; left: 487px; width: 130px; height: 130px; background-image: url("images/pf1.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
-#as2 { top: 310px; left: 631px; width: 130px; height: 130px; background-image: url("images/pf2.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
-#as3 { top: 310px; left: 775px; width: 130px; height: 130px; background-image: url("images/pf3.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
-#as4 { top: 310px; left: 919px; width: 130px; height: 130px; background-image: url("images/pf4.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
-#as5 { top: 456px; left: 487px; width: 130px; height: 130px; background-image: url("images/pf5.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
-#as6 { top: 456px; left: 631px; width: 130px; height: 130px; background-image: url("images/pf6.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
-#as7 { top: 456px; left: 775px; width: 130px; height: 130px; background-image: url("images/pf1.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
-#as8 { top: 456px; left: 919px; width: 130px; height: 130px; background-image: url("images/pf2.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as1 { top: 310px; left: 487px; width: 130px; height: 130px; background-image: url("images/pf1.svg"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as2 { top: 310px; left: 631px; width: 130px; height: 130px; background-image: url("images/pf2.svg"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as3 { top: 310px; left: 775px; width: 130px; height: 130px; background-image: url("images/pf3.svg"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as4 { top: 310px; left: 919px; width: 130px; height: 130px; background-image: url("images/pf4.svg"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as5 { top: 456px; left: 487px; width: 130px; height: 130px; background-image: url("images/pf5.svg"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as6 { top: 456px; left: 631px; width: 130px; height: 130px; background-image: url("images/pf6.svg"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as7 { top: 456px; left: 775px; width: 130px; height: 130px; background-image: url("images/pf1.svg"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+#as8 { top: 456px; left: 919px; width: 130px; height: 130px; background-image: url("images/pf2.svg"); background-size: cover; background-position: center; background-repeat: no-repeat; }
 
 /* ══════════════════════════════════════════════════════════════════════
    PROFILE POPUP REDESIGN — 1318 × 754 canvas
@@ -924,7 +924,7 @@ html, body {
 
 /* ── Avatar cards: 180×180, 4-per-row ─────────────────────────────── */
 .av-card { width: 180px !important; height: 180px !important; }
-#av1 { top: 135px !important; left: 416px !important; background-image: url("images/v2302_8313.png") !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; }
+#av1 { top: 135px !important; left: 416px !important; background-image: url("images/v2302_8313.svg") !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; }
 #av2 { top: 135px !important; left: 618px !important; }
 #av3 { top: 135px !important; left: 820px !important; }
 #av4 { top: 135px !important; left: 1022px !important; }
@@ -1934,14 +1934,14 @@ function closeProfilePopup() {
 // Avatar image map: 3-col Ã— 2-row source images
 // Avatar image map: pf1-pf6 individual PNGs (cycle if idx > 5)
 var AV_IMGS = [
-  'images/pf1.png', // 0
-  'images/pf2.png', // 1
-  'images/pf3.png', // 2
-  'images/pf4.png', // 3
-  'images/pf5.png', // 4
-  'images/pf6.png', // 5
-  'images/pf1.png', // 6 (cycle)
-  'images/pf2.png'  // 7 (cycle)
+  'images/pf1.svg', // 0
+  'images/pf2.svg', // 1
+  'images/pf3.svg', // 2
+  'images/pf4.svg', // 3
+  'images/pf5.svg', // 4
+  'images/pf6.svg', // 5
+  'images/pf1.svg', // 6 (cycle)
+  'images/pf2.svg'  // 7 (cycle)
 ];
 
 function applyAvatar(el, idx) {
@@ -1983,7 +1983,7 @@ function showProfileView(name) {
 function renderQuick() {
   var addCard = document.getElementById('av1');
   if (addCard) {
-    addCard.style.backgroundImage    = 'url(“images/v2302_8313.png”)';
+    addCard.style.backgroundImage    = 'url(“images/v2302_8313.svg”)';
     addCard.style.backgroundSize     = 'cover';
     addCard.style.backgroundPosition = 'center';
     addCard.style.backgroundRepeat   = 'no-repeat';
@@ -2069,14 +2069,14 @@ function switchSection(name) {
 }
 
 var STICKER_DATA = [
-  { img:'images/pf1.png', earned:true  },
-  { img:'images/pf2.png', earned:true  },
-  { img:'images/pf3.png', earned:true  },
-  { img:'images/pf4.png', earned:false },
-  { img:'images/pf5.png', earned:true  },
-  { img:'images/pf6.png', earned:false },
-  { img:'images/pf1.png', earned:true  },
-  { img:'images/pf2.png', earned:false }
+  { img:'images/pf1.svg', earned:true  },
+  { img:'images/pf2.svg', earned:true  },
+  { img:'images/pf3.svg', earned:true  },
+  { img:'images/pf4.svg', earned:false },
+  { img:'images/pf5.svg', earned:true  },
+  { img:'images/pf6.svg', earned:false },
+  { img:'images/pf1.svg', earned:true  },
+  { img:'images/pf2.svg', earned:false }
 ];
 function renderStickers() {
   var grid = document.getElementById('stickers-grid');
