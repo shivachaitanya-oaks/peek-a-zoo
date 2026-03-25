@@ -258,9 +258,6 @@ html, body {
   position: absolute; top: 165px; left: 0; width: 1300px; height: 859px;
   overflow-x: auto; overflow-y: hidden;
   scrollbar-width: none;
-  /* Fade cards out at the right edge instead of hard-clipping */
-  -webkit-mask-image: linear-gradient(to right, black calc(100% - 140px), transparent 100%);
-  mask-image:         linear-gradient(to right, black calc(100% - 140px), transparent 100%);
 }
 #guided-scroll-outer::-webkit-scrollbar { display: none; }
 #guided-scroll-inner { position: relative; width: 1560px; height: 859px; }
@@ -360,8 +357,8 @@ html, body {
 #canvas-guided  .v2302_7197 { left: 1759px !important; }
 #canvas-library .v2299_6723 { left: 1759px !important; }
 /* Scroll outer: extend to match gear right edge */
-#guided-scroll-outer  { width: 1880px !important; }
-#library-scroll-outer { width: 1880px !important; }
+#guided-scroll-outer  { width: 100% !important; }
+#library-scroll-outer { width: 100% !important; }
 /* Scroll inner: wider to hold extra cards */
 #guided-scroll-inner  { width: 3100px !important; }
 #library-scroll-inner { width: 2500px !important; }
