@@ -366,6 +366,77 @@ html, body {
 #g-card-4 { position: absolute !important; left: 1380px !important; top: 240px !important; }
 #g-card-5 { position: absolute !important; left: 1760px !important; top:  50px !important; }
 #g-card-6 { position: absolute !important; left: 2140px !important; top: 160px !important; }
+
+/* ── Lock cards (cards 4-6 on guided path) ─────────────────────────────── */
+.lock-card {
+  width: 280px !important; height: 280px !important;
+  background: url("images/game_icons_9.svg") center/contain no-repeat !important;
+  cursor: pointer;
+  transition: transform .15s, filter .15s;
+}
+.lock-card:hover  { transform: scale(1.06); filter: drop-shadow(0 0 14px rgba(255,210,80,.9)); }
+.lock-card:active { transform: scale(0.94); filter: drop-shadow(0 0 20px rgba(255,210,80,1)); }
+
+/* ── Unlock Games modal (inside canvas-guided) ─────────────────────────── */
+#modal-unlock-games {
+  display: none;
+  position: absolute; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.60);
+  pointer-events: all;
+}
+/* Panel background: v2302_8448.png (650×514) — centred on 1920×1024 canvas */
+#unlock-panel {
+  position: absolute;
+  left: 635px; top: 255px;
+  width: 650px; height: 514px;
+  background: url("images/v2302_8448.png") center/cover no-repeat;
+}
+/* Lock/shield badge sitting on top edge of the panel */
+#unlock-badge {
+  position: absolute;
+  left: 910px; top: 200px;   /* centred above panel top (635+325-50=910) */
+  width: 100px; height: 91px;
+  background: url("images/v54_152.png") center/cover no-repeat;
+}
+/* Text overlaid on the panel */
+#unlock-title {
+  position: absolute;
+  left: 635px; top: 375px;
+  width: 650px;
+  text-align: center;
+  font-family: 'Baloo 2', Baloo, cursive;
+  font-weight: 800; font-size: 26px;
+  color: rgba(60,35,10,1);
+  pointer-events: none;
+}
+#unlock-divider {
+  position: absolute;
+  left: 695px; top: 412px;
+  width: 530px; height: 2px;
+  background: rgba(180,155,120,0.45);
+}
+#unlock-body {
+  position: absolute;
+  left: 735px; top: 425px;
+  width: 460px;
+  text-align: center;
+  font-family: 'Baloo 2', Baloo, cursive;
+  font-style: italic; font-size: 16px; font-weight: 600;
+  color: rgba(80,55,20,0.88);
+  line-height: 1.75;
+  pointer-events: none;
+}
+/* Okay! button (v2302_8420.svg, 512×256 → displayed ~190×95) */
+#unlock-okay {
+  position: absolute;
+  left: 1075px; top: 686px;
+  width: 190px; height: 60px;
+  background: url("images/v2302_8420.svg") center/cover no-repeat;
+  cursor: pointer;
+  transition: opacity .15s, transform .12s;
+}
+#unlock-okay:hover  { opacity: .85; }
+#unlock-okay:active { transform: scale(0.95); }
 /* Move path-end marker past last new card */
 #canvas-guided .v2302_7237 { left: 2560px !important; }
 /* Library: 4 extra cards continuing column spacing (~270px) */
@@ -1082,9 +1153,9 @@ html, body {
       <div id="g-card-1" class="v2302_7226 animal-card"></div><!-- left:526  -->
       <div id="g-card-2" class="v2302_7220 animal-card"></div><!-- left:171  -->
       <div id="g-card-3" class="v2302_7232 animal-card"></div><!-- left:911  -->
-      <div id="g-card-4" class="v2302_7220 animal-card"></div><!-- left:1380 -->
-      <div id="g-card-5" class="v2302_7226 animal-card"></div><!-- left:1760 -->
-      <div id="g-card-6" class="v2302_7232 animal-card"></div><!-- left:2140 -->
+      <div id="g-card-4" class="lock-card"></div><!-- left:1380 — locked -->
+      <div id="g-card-5" class="lock-card"></div><!-- left:1760 — locked -->
+      <div id="g-card-6" class="lock-card"></div><!-- left:2140 — locked -->
       <div class="v2302_7237"></div><!-- path end element, moved to left:2560 -->
       <!-- Dotted trail circles -->
       <div class="v2299_6927"></div>
@@ -1100,6 +1171,16 @@ html, body {
       <div class="v2299_6937"></div>
       <div class="v2299_6938"></div>
     </div>
+  </div>
+
+  <!-- ═══ UNLOCK GAMES MODAL ════════════════════════════════════════════ -->
+  <div id="modal-unlock-games">
+    <div id="unlock-panel"></div>
+    <div id="unlock-badge"></div>
+    <div id="unlock-title">Unlock Games</div>
+    <div id="unlock-divider"></div>
+    <div id="unlock-body">Unlock to play the previous game!<br>Would you like to unlock it?</div>
+    <div id="unlock-okay"></div>
   </div>
 
 </div><!-- /canvas-guided -->
@@ -1556,9 +1637,24 @@ document.getElementById('player-badge-guided').addEventListener('click', functio
 
 ['g-card-1', 'g-card-2', 'g-card-3'].forEach(function(id, i) {
   document.getElementById(id).addEventListener('click', function() {
-    console.log('Guided card', i + 1, 'clicked â€” course:', selectedCourse);
+    console.log('Guided card', i + 1, 'clicked \u2014 course:', selectedCourse);
     // TODO: navigate to activity screen
   });
+});
+
+// \u2500\u2500 Lock cards (4-6): open Unlock Games modal \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+['g-card-4', 'g-card-5', 'g-card-6'].forEach(function(id) {
+  document.getElementById(id).addEventListener('click', function() {
+    document.getElementById('modal-unlock-games').style.display = 'block';
+  });
+});
+// Close modal on Okay button click
+document.getElementById('unlock-okay').addEventListener('click', function() {
+  document.getElementById('modal-unlock-games').style.display = 'none';
+});
+// Also close if overlay background is clicked
+document.getElementById('modal-unlock-games').addEventListener('click', function(e) {
+  if (e.target === this) this.style.display = 'none';
 });
 
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
