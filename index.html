@@ -258,6 +258,9 @@ html, body {
   position: absolute; top: 165px; left: 0; width: 1300px; height: 859px;
   overflow-x: auto; overflow-y: hidden;
   scrollbar-width: none;
+  /* Fade cards out at the right edge instead of hard-clipping */
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 140px), transparent 100%);
+  mask-image:         linear-gradient(to right, black calc(100% - 140px), transparent 100%);
 }
 #guided-scroll-outer::-webkit-scrollbar { display: none; }
 #guided-scroll-inner { position: relative; width: 1560px; height: 859px; }
