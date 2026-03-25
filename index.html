@@ -435,10 +435,11 @@ html, body {
   left: 78px; right: 82px;
   font-size: 29px;
 }
-/* Playroom: arrow+star takes ~100px left, book ~74px right of 416px pill
-   text centre = 100 + (416-100-74)/2 = 100+121 = 221px ≈ blue-pill centre */
+/* Playroom: book icon is INSIDE the blue pill on the left (~125px).
+   Text sits in the remaining blue space to its right.
+   left:125 right:25 → area=266px, centre=258px (right portion of pill) */
 #library-tabs .tab-inner-text {
-  left: 100px; right: 74px;
+  left: 125px; right: 25px;
   font-size: 26px;
 }
 
