@@ -398,66 +398,6 @@ html, body {
   background-image: url("images/v54_104.png") !important;
 }
 
-/* ── Mode-tab pill: shared outer container ───────────────────────────────── */
-.mode-tab-pill {
-  background: linear-gradient(170deg, #e8e8f4 0%, #c8c8dc 100%) !important;
-  border-radius: 46px !important;
-  box-shadow: 0 5px 16px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.85) !important;
-  display: flex !important;
-  align-items: center !important;
-  padding: 8px 12px !important;
-  gap: 6px !important;
-  overflow: visible !important;
-}
-
-/* Blue inner pill */
-.mtp-blue-inner {
-  flex: 1;
-  height: 68px;
-  background: linear-gradient(175deg, #4daeff 0%, #1570e8 55%, #0d5acc 100%);
-  border-radius: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: inset 0 -4px 8px rgba(0,0,0,0.22), 0 3px 10px rgba(20,100,230,0.45);
-  min-width: 0;
-}
-
-/* "Adventure" label */
-.mtp-label {
-  font-family: 'Baloo 2', Baloo, cursive;
-  font-size: 26px;
-  font-weight: 800;
-  color: #fff;
-  text-shadow: 0 2px 5px rgba(0,0,0,0.28);
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-/* Star icon */
-.mtp-star { font-size: 38px; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.28)); line-height: 1; }
-
-/* Book icon */
-.mtp-book { font-size: 30px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25)); line-height: 1; }
-
-/* Arrow */
-.mtp-arr {
-  font-size: 20px;
-  color: #2860b8;
-  font-weight: 900;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.18));
-  line-height: 1;
-}
-.mtp-arr-l { color: #3870c8; }
-.mtp-arr-r { color: #2860b8; }
-
-/* Side containers */
-.mtp-star-side, .mtp-arr-side { display: flex; align-items: center; padding: 0 4px; }
-.mtp-book-side, .mtp-icons-side { display: flex; align-items: center; gap: 4px; padding: 0 4px; }
-
-/* Hover / active states */
-.mode-tab-pill:hover  { filter: brightness(1.06); transform: scale(1.03); transition: all .15s; }
-.mode-tab-pill:active { transform: scale(0.97); }
 
 .v2302_7206 { cursor: pointer; z-index: 10; }
 .v2302_7197 { cursor: pointer; z-index: 10; transition: opacity .15s; }
@@ -1057,15 +997,7 @@ html, body {
       <div class="pb-stars"><span class="pb-star-ico">&#11088;</span><span class="pb-star-cnt">34</span></div>
     </div>
   </div>
-  <!-- Guided/Library toggle — Adventure active -->
-  <div id="guided-tabs" class="v2302_7206 mode-tab-pill">
-    <div class="mtp-star-side"><span class="mtp-star">⭐</span></div>
-    <div class="mtp-blue-inner"><span class="mtp-label">Adventure</span></div>
-    <div class="mtp-book-side">
-      <span class="mtp-book">📘</span>
-      <span class="mtp-arr mtp-arr-r">&#9658;</span>
-    </div>
-  </div>
+  <div id="guided-tabs" class="v2302_7206"></div><!-- Guided/Library toggle -->
   <div id="guided-home"    class="v2302_7197"></div><!-- settings â†’ opens Auth popup -->
 
   <!-- Mascot (fixed, does NOT scroll) -->
@@ -1118,15 +1050,7 @@ html, body {
       <div class="pb-stars"><span class="pb-star-ico">&#11088;</span><span class="pb-star-cnt">34</span></div>
     </div>
   </div>
-  <!-- Library/Guided toggle — Playroom active -->
-  <div id="library-tabs" class="v2299_6716 mode-tab-pill">
-    <div class="mtp-arr-side"><span class="mtp-arr mtp-arr-l">&#9668;</span></div>
-    <div class="mtp-blue-inner"></div>
-    <div class="mtp-icons-side">
-      <span class="mtp-star">⭐</span>
-      <span class="mtp-book">📘</span>
-    </div>
-  </div>
+  <div id="library-tabs" class="v2299_6716"></div><!-- Library/Guided toggle -->
   <div id="library-home" class="v2299_6723"></div><!-- settings â†’ opens Auth popup -->
 
   <!-- Fixed category label icons -->
