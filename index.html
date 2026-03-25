@@ -954,29 +954,29 @@ html, body {
 .pg-track { height: 22px !important; }
 .pg-value { font-size: 20px !important; }
 
-/* ── Edit view: left-col thumbnails — centred in 402px leftcol ──────── */
-/* 2 cols × 110px, 16px gap = 236px total → start x = (402-236)/2 = 83 */
-#ep1 { top: 205px !important; left: 83px !important;  width: 110px !important; height: 110px !important; }
-#ep2 { top: 205px !important; left: 209px !important; width: 110px !important; height: 110px !important; }
-#ep3 { top: 331px !important; left: 83px !important;  width: 110px !important; height: 110px !important; }
-#ep4 { top: 331px !important; left: 209px !important; width: 110px !important; height: 110px !important; }
-#ep5 { top: 457px !important; left: 83px !important;  width: 110px !important; height: 110px !important; }
-#ep6 { top: 457px !important; left: 209px !important; width: 110px !important; height: 110px !important; }
+/* ── Edit view: left-col thumbnails — 130×130, centred in 402px leftcol */
+/* 2 cols × 130px + 16px gap = 276px → start x = (402-276)/2 = 63      */
+#ep1 { top: 200px !important; left: 63px !important;  width: 130px !important; height: 130px !important; }
+#ep2 { top: 200px !important; left: 209px !important; width: 130px !important; height: 130px !important; }
+#ep3 { top: 346px !important; left: 63px !important;  width: 130px !important; height: 130px !important; }
+#ep4 { top: 346px !important; left: 209px !important; width: 130px !important; height: 130px !important; }
+#ep5 { top: 492px !important; left: 63px !important;  width: 130px !important; height: 130px !important; }
+#ep6 { top: 492px !important; left: 209px !important; width: 130px !important; height: 130px !important; }
 #ep-add {
-  top: 583px !important;
+  top: 638px !important;
   left: 126px !important;   /* (402-150)/2 = 126 → centred */
-  width: 150px !important; height: 50px !important;
-  font-size: 24px !important;
+  width: 150px !important; height: 46px !important;
+  font-size: 22px !important;
 }
 
-/* ── Edit view: avatar area (between leftcol and form) ──────────────── */
-/* avatar centre-x = 430, centre-y = 240                                */
-#ed-av-bg  { top: 130px !important; left: 320px !important; width: 220px !important; height: 220px !important; border-radius: 50% !important; }
-#ed-av-img { top: 142px !important; left: 332px !important; width: 196px !important; height: 196px !important; border-radius: 50% !important; }
-/* pencil pinned to top-RIGHT corner of the avatar circle */
-#btn-av-edit   { top: 130px !important; left: 496px !important; width: 56px !important; height: 56px !important; }
-/* "Change Avatar" button: 16px below the avatar, same x as avatar */
-#btn-av-change { top: 354px !important; left: 332px !important; width: 196px !important; height: 50px !important; }
+/* ── Edit view: avatar — centred in space between leftcol & form ─────── */
+/* Centre zone: x 402–580 (178px). Avatar 150px → left = 402+(178-150)/2 = 416 */
+#ed-av-bg  { top: 162px !important; left: 408px !important; width: 166px !important; height: 166px !important; border-radius: 50% !important; }
+#ed-av-img { top: 170px !important; left: 416px !important; width: 150px !important; height: 150px !important; border-radius: 50% !important; }
+/* pencil centred directly BELOW the avatar (not at top-right corner) */
+#btn-av-edit   { top: 334px !important; left: 462px !important; width: 44px !important; height: 44px !important; }
+/* Change Avatar button hidden */
+#btn-av-change { display: none !important; }
 
 /* ── Edit view: name header — aligns with avatar top (142px) ────────── */
 #ed-name-hdr { top: 142px !important; left: 580px !important; width: 700px !important; height: 44px !important; font-size: 30px !important; }
