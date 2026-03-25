@@ -369,8 +369,11 @@ html, body {
 
 /* ── Lock cards (cards 4-6 on guided path) ─────────────────────────────── */
 .lock-card {
-  width: 280px !important; height: 280px !important;
-  background: url("images/game_icons_9.svg") center/contain no-repeat !important;
+  width: 344px !important; height: 309px !important;
+  background: url("images/game_icons_9.svg") center center no-repeat !important;
+  background-size: cover !important;
+  opacity: 1;
+  overflow: hidden;
   cursor: pointer;
   transition: transform .15s, filter .15s;
 }
