@@ -399,13 +399,56 @@ html, body {
 }
 
 
-.v2302_7206 { cursor: pointer; z-index: 10; }
+/* ── Tab pill: "Adventure" / "Playroom" text overlay ────────────────────── */
+.v2302_7206, .v2299_6716 {
+  cursor: pointer; z-index: 10;
+  position: absolute !important;
+  overflow: hidden !important;
+}
+.tab-inner-text {
+  position: absolute;
+  left: 72px; right: 82px;
+  top: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Baloo 2', Baloo, cursive;
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.30);
+  letter-spacing: 0.5px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ── Guided settings icon → v2299_6723 ──────────────────────────────────── */
+#guided-home {
+  background-image: url("images/v2299_6723.png") !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* ── Worksheet icon (shared for both screens) ───────────────────────────── */
+.worksheet-icon {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  top: 34px;
+  left: 1230px;
+  background: url("images/v2302_7199.png") center/cover no-repeat;
+  cursor: pointer;
+  z-index: 10;
+  transition: opacity .15s;
+}
+.worksheet-icon:hover { opacity: .75; }
+
 .v2302_7197 { cursor: pointer; z-index: 10; transition: opacity .15s; }
 .v2302_7197:hover { opacity: .75; }
 .v2302_7214 { cursor: pointer; z-index: 10; transition: opacity .15s; }
 .v2302_7214:hover { opacity: .82; }
 
-.v2299_6716 { cursor: pointer; z-index: 10; }
 .v2299_6723 { cursor: pointer; z-index: 10; transition: opacity .15s; }
 .v2299_6723:hover { opacity: .75; }
 .v2299_6730 { cursor: pointer; z-index: 10; transition: opacity .15s; }
@@ -997,8 +1040,9 @@ html, body {
       <div class="pb-stars"><span class="pb-star-ico">&#11088;</span><span class="pb-star-cnt">34</span></div>
     </div>
   </div>
-  <div id="guided-tabs" class="v2302_7206"></div><!-- Guided/Library toggle -->
-  <div id="guided-home"    class="v2302_7197"></div><!-- settings â†’ opens Auth popup -->
+  <div id="guided-tabs" class="v2302_7206"><span class="tab-inner-text">Adventure</span></div><!-- Guided/Library toggle -->
+  <div id="guided-worksheet" class="top-icon-right worksheet-icon"></div><!-- worksheet -->
+  <div id="guided-home" class="v2302_7197 settings-icon"></div><!-- settings â†’ opens Auth popup -->
 
   <!-- Mascot (fixed, does NOT scroll) -->
   <div class="v2299_6939"><div class="v2299_6940"></div></div>
@@ -1050,7 +1094,8 @@ html, body {
       <div class="pb-stars"><span class="pb-star-ico">&#11088;</span><span class="pb-star-cnt">34</span></div>
     </div>
   </div>
-  <div id="library-tabs" class="v2299_6716"></div><!-- Library/Guided toggle -->
+  <div id="library-tabs" class="v2299_6716"><span class="tab-inner-text">Playroom</span></div><!-- Library/Guided toggle -->
+  <div id="library-worksheet" class="top-icon-right worksheet-icon"></div><!-- worksheet -->
   <div id="library-home" class="v2299_6723"></div><!-- settings â†’ opens Auth popup -->
 
   <!-- Fixed category label icons -->
